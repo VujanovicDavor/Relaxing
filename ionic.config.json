@@ -1,0 +1,7 @@
+{
+  "name": "RelaxingApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
