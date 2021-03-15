@@ -6,8 +6,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-button (click)="presentActionSheet()">
-    ActionSheet
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-button (click)="openPicker()" expand="block" color="warning">
+    Add Mood
   </ion-button>
 </ion-content>
