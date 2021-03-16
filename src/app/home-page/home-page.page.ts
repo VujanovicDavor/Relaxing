@@ -21,21 +21,25 @@ export class HomePagePage implements OnInit {
 
   options: string[];
   
-  getColumOptions(i){
-    let options = [];
+  getColumOptions(){
+    let returnOptions = [];
     
-  
-  }
+    for (let i = 0; i < this.options.length; i++) {
+      returnOptions.push({
+        text: this.options[i],
+        value: i
+      });
+      }
+      return returnOptions;
+    }
 
   getColumns(){
     let columns = [];
 
-    for(let i = 0; i < this.options.length; i++){
-      columns.push({
-        name: 'col-${i}',
-        options: this.options[i]
-      })
-    }
+    columns.push({
+      name: 'col-0',
+      options: this.getColumOptions()
+    });
 
     return columns;
   }
@@ -50,7 +54,7 @@ export class HomePagePage implements OnInit {
       }, {
         text: 'Confirm',
         handler: (value) => {
-          console.log('Value: ${value}');
+          console.log('Value: ${0}', value);
         }
       }]
     })
