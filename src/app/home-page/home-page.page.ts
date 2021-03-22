@@ -18,6 +18,8 @@ export class HomePagePage implements OnInit {
   }
 
   options: string[];
+
+  dateTime: Date;
   
   getColumOptions(){ //returns the options of a column
     let returnOptions = [];
@@ -44,8 +46,6 @@ export class HomePagePage implements OnInit {
 
 
   async openPicker(){ //opens or creates the picker with the options
-
-
     const picker = await this.pickerController.create({
       columns: this.getColumns(),
       buttons: [{
@@ -63,6 +63,7 @@ export class HomePagePage implements OnInit {
     //checking here if mood is already inserted!!
     //else dont present the picker
     await picker.present(); //presents the picker
+    console.log(this.dateTime = new Date());
   }
 
   ngOnInit() {
