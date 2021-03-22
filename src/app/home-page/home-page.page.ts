@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActionSheetController, PickerController } from '@ionic/angular';
+import {PickerController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home-page',
@@ -10,18 +10,16 @@ import { ActionSheetController, PickerController } from '@ionic/angular';
 export class HomePagePage implements OnInit {
 
   constructor(public pickerController: PickerController) {
-    this.options = [
+    this.options = [ //all mood options
       'Happy',
       'Sad',
       'Angry'
     ];
   }
 
-  Interface
-
   options: string[];
   
-  getColumOptions(){
+  getColumOptions(){ //returns the options of a column
     let returnOptions = [];
     
     for (let i = 0; i < this.options.length; i++) {
@@ -33,7 +31,7 @@ export class HomePagePage implements OnInit {
       return returnOptions;
     }
 
-  getColumns(){
+  getColumns(){ // returns the columns with options
     let columns = [];
 
     columns.push({
@@ -45,7 +43,9 @@ export class HomePagePage implements OnInit {
   }
 
 
-  async openPicker(){
+  async openPicker(){ //opens or creates the picker with the options
+
+
     const picker = await this.pickerController.create({
       columns: this.getColumns(),
       buttons: [{
@@ -58,8 +58,11 @@ export class HomePagePage implements OnInit {
         }
       }]
     })
+    
 
-    await picker.present();
+    //checking here if mood is already inserted!!
+    //else dont present the picker
+    await picker.present(); //presents the picker
   }
 
   ngOnInit() {
