@@ -17,14 +17,13 @@ export class HomePagePage implements OnInit {
     ];
   }
 
-  Interface
 
   options: string[];
   
-  getColumOptions(){
+  getColumOptions(){ // returns the options
     let returnOptions = [];
     
-    for (let i = 0; i < this.options.length; i++) {
+    for (let i = 0; i < this.options.length; i++) { //runs through options array
       returnOptions.push({
         text: this.options[i],
         value: i
@@ -33,7 +32,7 @@ export class HomePagePage implements OnInit {
       return returnOptions;
     }
 
-  getColumns(){
+  getColumns(){ //gets options per column (just one column)
     let columns = [];
 
     columns.push({
@@ -45,7 +44,7 @@ export class HomePagePage implements OnInit {
   }
 
 
-  async openPicker(){
+  async openPicker(){ //picker round with controller
     const picker = await this.pickerController.create({
       columns: this.getColumns(),
       buttons: [{
@@ -59,7 +58,7 @@ export class HomePagePage implements OnInit {
       }]
     })
 
-    await picker.present();
+    await picker.present(); //presents and opens picker
   }
 
   ngOnInit() {
