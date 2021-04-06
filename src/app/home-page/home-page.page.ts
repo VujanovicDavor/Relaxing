@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {PickerController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
+import { ModalPage } from '../modal/modal.page';
 
 @Component({
   selector: 'app-home-page',
@@ -9,58 +10,19 @@ import {PickerController } from '@ionic/angular';
 
 export class HomePagePage implements OnInit {
 
-  constructor(public pickerController: PickerController) {
-    this.options = [ //all mood options
-      'Happy',
-      'Sad',
-      'Angry'
-    ];
+  constructor(public modalController: ModalController) {
+
   }
 
-  options: string[];
-
-  dateTime: Date;
   
-  getColumOptions(){ // returns the options
-    let returnOptions = [];
-    
-    for (let i = 0; i < this.options.length; i++) { //runs through options array
-      returnOptions.push({
-        text: this.options[i],
-        value: i
-      });
-      }
-      return returnOptions;
-    }
 
-  getColumns(){ // returns the columns with options
-    let columns = [];
-
-    columns.push({
-      name: 'col-0',
-      options: this.getColumOptions()
+  async presentModal() {
+    const modal = await this.modalController.create({
+      component: ModalPage,
+      cssClass: 'my-custom-class',
+      
     });
-
-    return columns;
-  }
-
-
-  async openPicker(){ //picker round with controller
-    const picker = await this.pickerController.create({
-      columns: this.getColumns(),
-      buttons: [{
-        text: 'Cancel',
-        role: 'cancel'
-      }, {
-        text: 'Confirm',
-        handler: (value) => {
-          console.log('Value: ${0}', value);
-        }
-      }]
-    })
-    
-
-    await picker.present(); //presents and opens picker
+    return await modal.present();
   }
 
   ngOnInit() {
