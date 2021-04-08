@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { ModalPage } from '../modal/modal.page';
+import {InsertMoodModalPage} from '../insert-mood-modal/insert-mood-modal.page';
 
 @Component({
   selector: 'app-home-page',
@@ -18,9 +18,7 @@ export class HomePagePage implements OnInit {
 
   async presentModal() {
     const modal = await this.modalController.create({
-      component: ModalPage,
-      cssClass: 'my-custom-class',
-      
+      component: InsertMoodModalPage,
     });
     return await modal.present();
   }

@@ -1,0 +1,14 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="end"><ion-button (click)="dismiss()" color="primary">Cancel</ion-button></ion-buttons>
+    <ion-title>
+      Insert your Mood!
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-range max="10" min="0" snaps="true" ticks="true" pin="true"></ion-range>
+  </ion-list>
+</ion-content>
