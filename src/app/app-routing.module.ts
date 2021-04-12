@@ -8,6 +8,10 @@ const routes: Routes = [
   },  {
     path: 'home-page',
     loadChildren: () => import('./home-page/home-page.module').then( m => m.HomePagePageModule)
+  },
+  {
+    path: 'insert-mood-modal',
+    loadChildren: () => import('./insert-mood-modal/insert-mood-modal.module').then( m => m.InsertMoodModalPageModule)
   }
 
 ];

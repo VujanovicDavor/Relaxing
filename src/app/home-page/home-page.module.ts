@@ -8,6 +8,9 @@ import { HomePagePageRoutingModule } from './home-page-routing.module';
 
 import { HomePagePage } from './home-page.page';
 
+import { Component } from '@angular/core';
+import { ActionSheetController } from '@ionic/angular';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -17,4 +20,9 @@ import { HomePagePage } from './home-page.page';
   ],
   declarations: [HomePagePage]
 })
-export class HomePagePageModule {}
+export class HomePagePageModule {
+
+
+
+  
+}

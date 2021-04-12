@@ -1,0 +1,20 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="end"><ion-button (click)="dismiss()" color="primary">Cancel</ion-button></ion-buttons>
+    <ion-title>
+      Insert your Mood:
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <ion-list>
+    <ion-item>
+      <ion-range max="10" min="0" snaps="true" ticks="true" pin="true">
+        <ion-label slot="start">Stress</ion-label>
+        <ion-icon slot="end" name="skull-outline"></ion-icon>
+        <ion-icon slot="start" name="happy-outline"></ion-icon>
+      </ion-range>
+    </ion-item>
+  </ion-list>
+</ion-content>
