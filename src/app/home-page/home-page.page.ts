@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {PickerController } from '@ionic/angular';
+import { Storage } from '@ionic/storage-angular';
 
 @Component({
   selector: 'app-home-page',
@@ -9,7 +10,7 @@ import {PickerController } from '@ionic/angular';
 
 export class HomePagePage implements OnInit {
 
-  constructor(public pickerController: PickerController) {
+  constructor(public pickerController: PickerController, public storage: Storage) {
     this.options = [ //all mood options
       'Happy',
       'Sad',
@@ -19,7 +20,7 @@ export class HomePagePage implements OnInit {
 
   options: string[];
 
-  dateTime: Date;
+  dateTime: Number;
   
   getColumOptions(){ //returns the options of a column
     let returnOptions = [];
@@ -63,10 +64,11 @@ export class HomePagePage implements OnInit {
     //checking here if mood is already inserted!!
     //else dont present the picker
     await picker.present(); //presents the picker
-    console.log(this.dateTime = new Date());
+    console.log(this.dateTime = new Date().getTime());
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.storage.create();
   }
 
 }
