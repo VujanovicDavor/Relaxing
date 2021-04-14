@@ -1,3 +1,4 @@
+import { HtmlAstPath } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
@@ -8,11 +9,25 @@ import { ModalController } from '@ionic/angular';
 })
 export class InsertMoodModalPage implements OnInit {
 
+  relaxLevel: any = 0;
+  productivityLevel: any = 0;
+   
   constructor(public modalController: ModalController) { }
 
-  dismiss(){
+  closeModal(){ //closes the modal if the user presses cancel
     this.modalController.dismiss();
-    console.log("ModalDismissed");
+  }
+
+  submitModal(){ //submits the data to the parent modal page (home-page)
+    this.modalController.dismiss({'relaxLevel': this.relaxLevel, 'productivityLevel': this.productivityLevel});
+  }
+
+  getRelaxationLevel(relaxLevel){ //Methods to receive data from the ranges
+    this.relaxLevel = relaxLevel;
+  }
+
+  getProductivityLevel(productivityLevel){
+    this.productivityLevel = productivityLevel;
   }
 
   ngOnInit() {
