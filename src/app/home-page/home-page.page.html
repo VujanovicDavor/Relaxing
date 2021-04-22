@@ -7,5 +7,5 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <ion-button expand="block" size="large" (click)="presentModal()">Insert your Mood</ion-button>
+  <ion-button [hidden]="isHidden" expand="block" (click)="presentModal()">Insert your Mood</ion-button>
 </ion-content>
