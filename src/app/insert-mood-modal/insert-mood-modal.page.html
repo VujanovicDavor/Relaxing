@@ -7,24 +7,37 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content fullscreen>
+<ion-content [fullscreen]="true" class="ion-padding">
   <ion-list>
     <ion-item>
+      <ion-label class="ion-text-wrap">Relax</ion-label>
+    </ion-item>
+    <ion-item>
       <ion-range [(ngModel)]="relaxLevel" (ionChange)="getRelaxationLevel(relaxLevel)" max="5" min="1" snaps="true" ticks="true" pin="true">
-        <ion-label slot="start">Relax</ion-label>
-        <ion-icon slot="start" name="skull-outline"></ion-icon>
-        <ion-icon slot="end" name="happy-outline"></ion-icon>
+        <ion-icon slot="start" name="alarm-outline"></ion-icon>>
+        <ion-icon slot="end" name="sparkles-outline"></ion-icon>
       </ion-range>
     </ion-item>
     <ion-item>
+      <ion-label>Productivity</ion-label>
+    </ion-item>
+    <ion-item>
       <ion-range [(ngModel)]='productivityLevel' (ionChange)="getProductivityLevel(productivityLevel)" max="5" min="1" snaps="true" ticks="true" pin="true">
-        <ion-label slot="start">Productivity</ion-label>
         <ion-icon slot="start" name="close-outline"></ion-icon>
         <ion-icon slot="end" name="checkmark-outline"></ion-icon>
       </ion-range>
     </ion-item>
     <ion-item>
-      <ion-button (click)="submitModal()" type="submit" color="primary">Submit</ion-button>
+      <ion-label>Satisfaction</ion-label>
     </ion-item>
-  </ion-list>
+    <ion-item>
+      <ion-range min="1" max="5" snaps="true" ticks="true" pins="true">
+        <ion-icon slot="start" name="sad-outline"></ion-icon>
+        <ion-icon slot="end" name="happy-outline"></ion-icon>
+      </ion-range>
+    </ion-item>
+    <ion-item>
+      <ion-button (click)="submitModal()" expand="block" color="primary">Submit</ion-button>
+    </ion-item>
+  </ion-list> 
 </ion-content>

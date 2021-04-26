@@ -16,7 +16,7 @@ export class HomePagePage implements OnInit {
 
 
   constructor(public modalController: ModalController, public storage: Storage) {
-    this.isHidden = true; //set true if the insert button should be hidden
+    this.isHidden = false; //set true if the insert button should be hidden
   } 
 
   async presentModal() {
@@ -79,7 +79,7 @@ export class HomePagePage implements OnInit {
 
   async ngOnInit(){ 
     await this.storage.create();
-    this.checkLastMoodInsert();
+    //this.checkLastMoodInsert();
   }
 }
 
