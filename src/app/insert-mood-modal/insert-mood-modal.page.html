@@ -11,6 +11,9 @@
   <ion-list>
     <ion-item>
       <ion-label class="ion-text-wrap">Relax</ion-label>
+      <ion-buttons slot="end">
+        <ion-button (click)="showPopover()"><ion-icon  name="information-circle-outline"></ion-icon></ion-button>
+      </ion-buttons>
     </ion-item>
     <ion-item>
       <ion-range [(ngModel)]="relaxLevel" (ionChange)="getRelaxationLevel(relaxLevel)" max="5" min="1" snaps="true" ticks="true" pin="true">

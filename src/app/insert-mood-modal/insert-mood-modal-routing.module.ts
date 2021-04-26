@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: InsertMoodModalPage
+  },
+  {
+    path: 'mood-explanation-popover',
+    loadChildren: () => import('./mood-explanation-popover/mood-explanation-popover.module').then( m => m.MoodExplanationPopoverPageModule)
   }
 ];
 
