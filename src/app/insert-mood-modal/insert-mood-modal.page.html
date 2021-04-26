@@ -10,14 +10,14 @@
 <ion-content fullscreen>
   <ion-list>
     <ion-item>
-      <ion-range [(ngModel)]="relaxLevel" (ionChange)="getRelaxationLevel(relaxLevel)" max="5" min="0" snaps="true" ticks="true" pin="true">
+      <ion-range [(ngModel)]="relaxLevel" (ionChange)="getRelaxationLevel(relaxLevel)" max="5" min="1" snaps="true" ticks="true" pin="true">
         <ion-label slot="start">Relax</ion-label>
         <ion-icon slot="start" name="skull-outline"></ion-icon>
         <ion-icon slot="end" name="happy-outline"></ion-icon>
       </ion-range>
     </ion-item>
     <ion-item>
-      <ion-range [(ngModel)]='productivityLevel' (ionChange)="getProductivityLevel(productivityLevel)" max="5" min="0" snaps="true" ticks="true" pin="true">
+      <ion-range [(ngModel)]='productivityLevel' (ionChange)="getProductivityLevel(productivityLevel)" max="5" min="1" snaps="true" ticks="true" pin="true">
         <ion-label slot="start">Productivity</ion-label>
         <ion-icon slot="start" name="close-outline"></ion-icon>
         <ion-icon slot="end" name="checkmark-outline"></ion-icon>
