@@ -13,6 +13,7 @@ export class InsertMoodModalPage implements OnInit {
 
   relaxLevel: any = 0;
   productivityLevel: any = 0;
+  satisfactionLevel: any = 0;
    
   constructor(public modalController: ModalController, public popoverController: PopoverController) { }
 
@@ -34,15 +35,19 @@ export class InsertMoodModalPage implements OnInit {
   }
 
   submitModal(){ //submits the data to the parent modal page (home-page)
-    this.modalController.dismiss({'relaxLevel': this.relaxLevel, 'productivityLevel': this.productivityLevel});
+    this.modalController.dismiss({'relaxLevel': this.relaxLevel, 'productivityLevel': this.productivityLevel, 'satisfactionLevel': this.satisfactionLevel});
   }
 
-  getRelaxationLevel(relaxLevel){ //Methods to receive data from the ranges
+  getRelaxationLevel(relaxLevel){ 
     this.relaxLevel = relaxLevel;
   }
 
   getProductivityLevel(productivityLevel){
     this.productivityLevel = productivityLevel;
+  }
+
+  getSatisfactionLevel(satisfactionLevel){
+    this.satisfactionLevel = satisfactionLevel;
   }
 
   

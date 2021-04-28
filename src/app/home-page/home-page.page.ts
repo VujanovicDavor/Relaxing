@@ -32,10 +32,50 @@ export class HomePagePage implements OnInit {
        let newMoodObject: Mood = <Mood> data.data; // receive data => store to mood array
        newMoodObject.dateTime = new Date();
        this.addMoodObject(newMoodObject);
+       
      } 
     });
 
     return await modal.present();
+  }
+
+  calculateScore(moodObject: Mood){
+    let score: number = moodObject.relaxLevel + moodObject.productivityLevel + moodObject.satisfactionLevel;
+    this.loadCards(score);
+  }
+
+  async loadCards(score: number){
+    this.storage.get(CARDS_KEY).then((cards: ExerciseCard[]) => {
+      cards.forEach(element => {
+        this.presentCard(element);
+      });
+    }).catch(()=>{
+      console.log('no cards found');
+    });
+  }
+
+  presentCard(card: ExerciseCard){
+    const cardDiv: HTMLElement = document.getElementById('moodCards');
+    
+    // create HTML-Card-Content
+    const ionCard: HTMLElement = document.createElement('ion-card');
+    const ionHeader: HTMLElement = document.createElement('ion-card-header');
+    const ionTitle: HTMLElement = document.createElement('ion-card-title');
+    const img: HTMLImageElement = document.createElement('img');
+    const ionContent: HTMLElement = document.createElement('ion-card-content');
+
+    // add text-content
+    ionTitle.textContent = card.title;
+    img.src = card.img;
+    ionContent.textContent = card.content;
+
+    // append elements
+    ionHeader.appendChild(ionTitle);
+    ionCard.appendChild(ionHeader);
+    ionCard.appendChild(img);
+    ionCard.appendChild(ionContent);
+
+    cardDiv.appendChild(ionCard);
   }
 
   async addMoodObject(toInsert: Mood){
@@ -79,14 +119,24 @@ export class HomePagePage implements OnInit {
 
   async ngOnInit(){ 
     await this.storage.create();
-    //this.checkLastMoodInsert();
+   //  this.checkLastMoodInsert();
   }
 }
 
 interface Mood {
   relaxLevel: number,
   productivityLevel: number,
+  satisfactionLevel: number,
   dateTime: Date
 }
 
+interface ExerciseCard {
+  id: string,
+  title: string,
+  content: string,
+  img: string
+}
+
+
 const MOOD_KEY = 'MoodObject';
+const CARDS_KEY = 'ExerciseCards';
