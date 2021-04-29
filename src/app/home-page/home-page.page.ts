@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import {InsertMoodModalPage} from '../insert-mood-modal/insert-mood-modal.page';
-import { Storage } from '@ionic/storage-angular'
+import { Storage } from '@ionic/storage-angular';
+import { ExerciseCard } from '../../exerciseInterface';
 
 @Component({
   selector: 'app-home-page',
@@ -48,10 +49,12 @@ export class HomePagePage implements OnInit {
   async loadCards(score: number){
     this.storage.get(CARDS_KEY).then((cards: ExerciseCard[]) => {
       cards.forEach(element => {
-        this.presentCard(element);
+        if(element.lowerScoreBorder <= score && score <= element.upperScoreBorder){
+          this.presentCard(element);
+        }
       });
     }).catch(()=>{
-      console.log('no cards found');
+      console.log('Error in loadCards');
     });
   }
 
@@ -132,13 +135,6 @@ interface Mood {
   productivityLevel: number,
   satisfactionLevel: number,
   dateTime: Date
-}
-
-interface ExerciseCard {
-  id: string,
-  title: string,
-  content: string,
-  img: string
 }
 
 
