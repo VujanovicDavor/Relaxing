@@ -28,6 +28,7 @@ export class HomePagePage implements OnInit {
 
      if(data.data == null){
        console.log('No data received (pressed "cancel")');
+       this.isHidden = false;
      } else{
        let newMoodObject: Mood = <Mood> data.data; // receive data => store to mood array
        newMoodObject.dateTime = new Date();
@@ -38,7 +39,7 @@ export class HomePagePage implements OnInit {
     return await modal.present();
   }
 
-  async addMoodObject(toInsert: Mood){
+  async addMoodObject(toInsert: Mood){ // append new moodObject to the array
     this.storage.get(MOOD_KEY).then((moodArr: Mood[]) => {
       
       if(moodArr == null){
@@ -48,10 +49,10 @@ export class HomePagePage implements OnInit {
       moodArr.push(toInsert);
       console.log(moodArr);
       this.storage.set(MOOD_KEY ,moodArr);
+      this.isHidden = true;
     }).catch(() =>{
       console.log('cant store mood Obj in addMoodObject()');
     });
-    this.isHidden = true;
   }
 
 
@@ -61,9 +62,11 @@ export class HomePagePage implements OnInit {
 
     if(this.moodObjects == null){
       this.isHidden = false;
+      this.presentModal();
     }
     else if(this.moodObjects.length == 0){
       this.isHidden = false;
+      this.presentModal();
     } else {
       const result = new Date().getTime() - this.moodObjects[this.moodObjects.length - 1].dateTime.getTime(); // dif between last input and now
       console.log(result);
@@ -71,13 +74,14 @@ export class HomePagePage implements OnInit {
 
       if(result >= 43200000){
         this.isHidden = false;
+        this.presentModal();
       } else{
         this.isHidden = true;
       }
     }
   }
 
-  async ngOnInit(){ 
+  async ngOnInit(){ // functions after init the app
     await this.storage.create();
     this.checkLastMoodInsert();
   }
@@ -89,4 +93,4 @@ interface Mood {
   dateTime: Date
 }
 
-const MOOD_KEY = 'MoodObject';
+const MOOD_KEY = 'MoodObject'; // key to get moods from storage
