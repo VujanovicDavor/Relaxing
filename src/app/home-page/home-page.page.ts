@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import {InsertMoodModalPage} from '../insert-mood-modal/insert-mood-modal.page';
 import { Storage } from '@ionic/storage-angular';
-import { ExerciseCard } from '../../exerciseInterface';
+import { ExerciseCard } from '../../exercise.card';
 
 @Component({
-  selector: 'app-home-page',
+  selector: 'app-home-page',  
   templateUrl: './home-page.page.html',
   styleUrls: ['./home-page.page.scss'],
 })
@@ -49,7 +49,7 @@ export class HomePagePage implements OnInit {
   async loadCards(score: number){
     this.storage.get(CARDS_KEY).then((cards: ExerciseCard[]) => {
       cards.forEach(element => {
-        if(element.lowerScoreBorder <= score && score <= element.upperScoreBorder){
+        if(element.getLowerBorder() <= score && score <= element.getUpperBorder()){
           this.presentCard(element);
         }
       });
@@ -60,26 +60,7 @@ export class HomePagePage implements OnInit {
 
   presentCard(card: ExerciseCard){
     const cardDiv: HTMLElement = document.getElementById('moodCards');
-    
-    // create HTML-Card-Content
-    const ionCard: HTMLElement = document.createElement('ion-card');
-    const ionHeader: HTMLElement = document.createElement('ion-card-header');
-    const ionTitle: HTMLElement = document.createElement('ion-card-title');
-    const img: HTMLImageElement = document.createElement('img');
-    const ionContent: HTMLElement = document.createElement('ion-card-content');
-
-    // add text-content
-    ionTitle.textContent = card.title;
-    img.src = card.img;
-    ionContent.textContent = card.content;
-
-    // append elements
-    ionHeader.appendChild(ionTitle);
-    ionCard.appendChild(ionHeader);
-    ionCard.appendChild(img);
-    ionCard.appendChild(ionContent);
-
-    cardDiv.appendChild(ionCard);
+    cardDiv.appendChild(card.getCard());
   }
 
   async addMoodObject(toInsert: Mood){

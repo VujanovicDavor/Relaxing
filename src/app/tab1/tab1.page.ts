@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
+import { ExerciseCard } from 
 
 
 @Component({
@@ -10,26 +11,7 @@ import { Storage } from '@ionic/storage-angular';
 
 export class Tab1Page implements OnInit{
 
-  constructor(public storage: Storage) {}
-
-  async loadExercises(){
-    const card: ExerciseCard = await this.storage.get('exerciseCards');
-    const div = document.getElementById('test');
-    const ionicCard = document.createElement('ion-card');
-    const ionCardHeader = document.createElement('ion-card-header');
-    const ionCardTitle = document.createElement('ion-card-title');
-    ionCardTitle.textContent = card.title;
-    ionCardHeader.appendChild(ionCardTitle);
-    const img = document.createElement('img');
-    img.src = card.img;
-    const ionCardContent = document.createElement('ion-card-content');
-    ionCardContent.textContent = card.content;
-
-    ionicCard.appendChild(ionCardHeader);
-    ionicCard.appendChild(img);
-    ionicCard.appendChild(ionCardContent);
-    div.appendChild(ionicCard);
-  }
+  constructor(private storage: Storage) {}
 
   createExercise(){
     let card: ExerciseCard = {
@@ -44,15 +26,7 @@ export class Tab1Page implements OnInit{
 
   async ngOnInit(){
     await this.storage.create();
-    //this.createExercise();
-    this.loadExercises();
+    //this.storage.clear();
   }
 
-}
-
-interface ExerciseCard {
-  id: string,
-  title: string,
-  content: string,
-  img: string
 }
