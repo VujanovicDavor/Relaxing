@@ -4,6 +4,7 @@ export class ExerciseCard{
     img: string;
     scoreUpperBorder: number;
     scoreLowerBorder: number;
+    id: string;
 
     constructor(){
         this.scoreUpperBorder = 0;
@@ -13,12 +14,13 @@ export class ExerciseCard{
         this.title = '';
     }
 
-    createCard(title: string, content: string, img: string, scoreLowerBorder: number, scoreUpperBorder){
+    createCard(id: string ,title: string, content: string, img: string, scoreLowerBorder: number, scoreUpperBorder){
         this.scoreUpperBorder = scoreUpperBorder;
         this.scoreLowerBorder = scoreLowerBorder;
         this.content = content;
         this.img = img;
         this.title = title;
+        this.id = id;
     }
 
     getCard(): HTMLElement{
@@ -41,13 +43,5 @@ export class ExerciseCard{
         ionCard.appendChild(ionContent);
 
         return ionCard;
-    }
-
-    getLowerBorder(): number{
-        return this.scoreLowerBorder;
-    }
-
-    getUpperBorder(): number{
-        return this.scoreUpperBorder;
     }
 }

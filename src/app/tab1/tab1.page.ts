@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
-import { ExerciseCard } from 
+import { ExerciseCard } from '../../Models/exercise.card';
 
 
 @Component({
@@ -13,7 +13,11 @@ export class Tab1Page implements OnInit{
 
   constructor(private storage: Storage) {}
 
+  /*
   createExercise(){
+    const card: ExerciseCard = new ExerciseCard();
+    card.createCard()
+
     let card: ExerciseCard = {
     content : 'Hey, this is a test Card !!!',
     id : 'testCard',
@@ -22,7 +26,7 @@ export class Tab1Page implements OnInit{
     };
     
     this.storage.set('exerciseCards', card);
-  }
+  }*/
 
   async ngOnInit(){
     await this.storage.create();
