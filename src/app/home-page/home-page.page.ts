@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import {InsertMoodModalPage} from '../insert-mood-modal/insert-mood-modal.page';
 import { Storage } from '@ionic/storage-angular';
-import { ExerciseCard } from '../../Models/exercise.card';
-import { Mood } from '../../Models/mood';
+import { ExerciseCard } from '../../models/exercise.card';
+import { Mood } from '../../models/mood';
 
 @Component({
   selector: 'app-home-page',  
@@ -32,9 +32,8 @@ export class HomePagePage implements OnInit {
        this.isHidden = false;
      } else{
        const newMoodObject: Mood = <Mood> data.data; // receive data => store to mood array
-       newMoodObject.dateTime = new Date();
-       this.addMoodObject(newMoodObject);
-    
+       console.log(newMoodObject);
+       //this.addMoodObject(newMoodObject);
      } 
     });
 

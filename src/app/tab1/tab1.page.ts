@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
-import { ExerciseCard } from '../../Models/exercise.card';
+import { ExerciseCard } from '../../models/exercise.card';
 
 
 @Component({
