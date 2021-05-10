@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import {InsertMoodModalPage} from '../insert-mood-modal/insert-mood-modal.page';
-import { Storage } from '@ionic/storage-angular'
+import { Storage } from '@ionic/storage-angular';
+import { ExerciseCard } from '../../models/exercise.card';
+import { Mood } from '../../models/mood';
 
 @Component({
-  selector: 'app-home-page',
+  selector: 'app-home-page',  
   templateUrl: './home-page.page.html',
   styleUrls: ['./home-page.page.scss'],
 })
@@ -12,7 +14,6 @@ import { Storage } from '@ionic/storage-angular'
 export class HomePagePage implements OnInit {
 
   isHidden: boolean;
-  moodObjects: Mood[];
 
 
   constructor(public modalController: ModalController, public storage: Storage) {
@@ -28,11 +29,11 @@ export class HomePagePage implements OnInit {
 
      if(data.data == null){
        console.log('No data received (pressed "cancel")');
+       this.isHidden = false;
      } else{
-       let newMoodObject: Mood = <Mood> data.data; // receive data => store to mood array
-       newMoodObject.dateTime = new Date();
-       this.addMoodObject(newMoodObject);
-       this.calculateScore(newMoodObject);
+       const newMoodObject: Mood = <Mood> data.data; // receive data => store to mood array
+       console.log(newMoodObject);
+       //this.addMoodObject(newMoodObject);
      } 
     });
 
@@ -40,42 +41,30 @@ export class HomePagePage implements OnInit {
   }
 
   calculateScore(moodObject: Mood){
-    let score: number = moodObject.relaxLevel + moodObject.productivityLevel + moodObject.satisfactionLevel;
-    this.loadCards(score);
+    const score = moodObject.getMoodScore();
+
+    if(score > 0){
+      this.loadCards(score);
+    } else {
+      console.log('score <= 0 -> no cards can be loaded');
+    }
   }
 
   async loadCards(score: number){
     this.storage.get(CARDS_KEY).then((cards: ExerciseCard[]) => {
       cards.forEach(element => {
-        this.presentCard(element);
+        if(element.scoreLowerBorder <= score && score <= element.scoreUpperBorder){
+          this.presentCard(element);
+        }
       });
     }).catch(()=>{
-      console.log('no cards found');
+      console.log('Error in loadCards');
     });
   }
 
   presentCard(card: ExerciseCard){
     const cardDiv: HTMLElement = document.getElementById('moodCards');
-    
-    // create HTML-Card-Content
-    const ionCard: HTMLElement = document.createElement('ion-card');
-    const ionHeader: HTMLElement = document.createElement('ion-card-header');
-    const ionTitle: HTMLElement = document.createElement('ion-card-title');
-    const img: HTMLImageElement = document.createElement('img');
-    const ionContent: HTMLElement = document.createElement('ion-card-content');
-
-    // add text-content
-    ionTitle.textContent = card.title;
-    img.src = card.img;
-    ionContent.textContent = card.content;
-
-    // append elements
-    ionHeader.appendChild(ionTitle);
-    ionCard.appendChild(ionHeader);
-    ionCard.appendChild(img);
-    ionCard.appendChild(ionContent);
-
-    cardDiv.appendChild(ionCard);
+    cardDiv.appendChild(card.getCard());
   }
 
   async addMoodObject(toInsert: Mood){
@@ -88,55 +77,43 @@ export class HomePagePage implements OnInit {
       moodArr.push(toInsert);
       console.log(moodArr);
       this.storage.set(MOOD_KEY ,moodArr);
+      this.isHidden = true;
     }).catch(() =>{
       console.log('cant store mood Obj in addMoodObject()');
     });
-    this.isHidden = true;
   }
 
 
   async checkLastMoodInsert(){ //checks the last insert of a Mood object into the storage
 
-    this.moodObjects = await this.storage.get(MOOD_KEY);
-
-    if(this.moodObjects == null){
-      this.isHidden = false;
-    }
-    else if(this.moodObjects.length == 0){
-      this.isHidden = false;
-    } else {
-      const result = new Date().getTime() - this.moodObjects[this.moodObjects.length - 1].dateTime.getTime(); // dif between last input and now
-      console.log(result);
-      console.log(this.moodObjects[this.moodObjects.length - 1].dateTime);
-
-      if(result >= 43200000){
+    this.storage.get(MOOD_KEY).then((moods: Mood[]) => {
+      if(moods == null){
         this.isHidden = false;
-      } else{
-        this.isHidden = true;
+        this.presentModal();
       }
-    }
+      else if(moods.length == 0){
+        this.isHidden = false;
+        this.presentModal();
+      } else {
+        const result = new Date().getTime() - moods[moods.length - 1].dateTime.getTime(); // dif between last input and now
+        console.log(result);
+        console.log(moods[moods.length - 1].dateTime);
+  
+        if(result >= 43200000){
+          this.isHidden = false;
+          this.presentModal();
+        } else{
+          this.isHidden = true;
+        }
+      }
+    });
   }
 
-  async ngOnInit(){ 
+  async ngOnInit(){ // functions after init the app
     await this.storage.create();
    //  this.checkLastMoodInsert();
   }
 }
-
-interface Mood {
-  relaxLevel: number,
-  productivityLevel: number,
-  satisfactionLevel: number,
-  dateTime: Date
-}
-
-interface ExerciseCard {
-  id: string,
-  title: string,
-  content: string,
-  img: string
-}
-
 
 const MOOD_KEY = 'MoodObject';
 const CARDS_KEY = 'ExerciseCards';

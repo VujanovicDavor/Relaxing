@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
 import { MoodExplanationPopoverPage } from './mood-explanation-popover/mood-explanation-popover.page';
+import { Mood } from '../../models/mood';
 
 @Component({
   selector: 'app-insert-mood-modal',
@@ -35,7 +36,12 @@ export class InsertMoodModalPage implements OnInit {
   }
 
   submitModal(){ //submits the data to the parent modal page (home-page)
-    this.modalController.dismiss({'relaxLevel': this.relaxLevel, 'productivityLevel': this.productivityLevel, 'satisfactionLevel': this.satisfactionLevel});
+    const mood: Mood = new Mood();
+    mood.productivityLevel = this.productivityLevel;
+    mood.relaxLevel = this.relaxLevel;
+    mood.satisfactionLevel = this.satisfactionLevel;
+    mood.dateTime = new Date();
+    this.modalController.dismiss(mood);
   }
 
   getRelaxationLevel(relaxLevel){ 

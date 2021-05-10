@@ -1,12 +1,22 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
+    <ion-title class="ion-text-center">
       Home
     </ion-title>
+    <ion-buttons slot="start">
+      <ion-button>
+        <ion-icon name="calendar-number-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon name="information-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content [fullscreen]="true" class="background ion-padding">
   <ion-button [hidden]="isHidden" expand="block" (click)="presentModal()">Insert your Mood</ion-button>
   <div id='moodCards'></div>
 </ion-content>
