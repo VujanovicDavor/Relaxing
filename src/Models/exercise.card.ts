@@ -44,4 +44,13 @@ export class ExerciseCard{
 
         return ionCard;
     }
+
+    toListItem(): HTMLElement{
+        //init
+        const item: HTMLElement = document.createElement('ion-item');
+        
+        //declare
+        item.textContent = this.title;
+        return item;
+    }
 }

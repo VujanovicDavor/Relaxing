@@ -7,6 +7,8 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-button (click)="openPlaylistPopover()" expand="block">
+    Create new Playlist
+  </ion-button>
 </ion-content>

@@ -7,6 +7,14 @@ const routes: Routes = [
   {
     path: '',
     component: ManageplaylistsPage
+  },
+  {
+    path: 'playlistpopover',
+    loadChildren: () => import('./playlistpopover/playlistpopover.module').then( m => m.PlaylistpopoverPageModule)
+  },
+  {
+    path: 'add-exercises',
+    loadChildren: () => import('./add-exercises/add-exercises.module').then( m => m.AddExercisesPageModule)
   }
 ];
 

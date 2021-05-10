@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="closeModal()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>Exercises:</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-searchbar showCancelButton="focus"></ion-searchbar>
+  <div id="exercises">
+  </div>
+</ion-content>
