@@ -32,20 +32,40 @@ export class Tab1Page implements OnInit{
   }
 
   createExercise(){
-    let card: ExerciseCard = {
+    let exerciseArr: ExerciseCard[] = new Array();
+
+
+    const card: ExerciseCard = {
     content : 'Hey, this is a test Card !!!',
     id : 'testCard',
     title : 'Test',
     img : 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png',
     };
-    
-    this.storage.set('exerciseCards', card);
+
+    const secondcard: ExerciseCard = {
+      content : 'second Test Card',
+      id: 'scond TestCard',
+      title: 'Dings',
+      img: 'GonImageDC.png'
+    };
+
+    exerciseArr.push(card);
+    exerciseArr.push(secondcard);
+
+    this.storage.set(CARDS_KEY, exerciseArr);
+
+    console.log('set card');
   }
 
   async ngOnInit(){
     await this.storage.create();
-    //this.createExercise();
-    this.loadExercises();
+
+    this.storage.get(CARDS_KEY).then((exerciseArr: ExerciseCard[])=>{
+      if(exerciseArr == null || exerciseArr.length == 0){
+        this.createExercise();
+        console.log('creating Cards');
+      }
+    })
   }
 
 }
@@ -56,3 +76,5 @@ interface ExerciseCard {
   content: string,
   img: string
 }
+
+const CARDS_KEY = 'ExerciseCards';

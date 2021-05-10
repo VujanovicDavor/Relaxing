@@ -32,7 +32,7 @@ export class HomePagePage implements OnInit {
        let newMoodObject: Mood = <Mood> data.data; // receive data => store to mood array
        newMoodObject.dateTime = new Date();
        this.addMoodObject(newMoodObject);
-       
+       this.calculateScore(newMoodObject);
      } 
     });
 
