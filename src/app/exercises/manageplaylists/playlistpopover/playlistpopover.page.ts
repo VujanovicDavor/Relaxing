@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController, NavParams } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
+import { ExerciseCard } from 'src/models/exercise.card';
 import { AddExercisesPage } from '../add-exercises/add-exercises.page';
 
 @Component({
@@ -23,8 +24,20 @@ export class PlaylistpopoverPage implements OnInit {
     const addExerciseModal = await this.modalController.create({
       component: AddExercisesPage
     });
+
+    addExerciseModal.onDidDismiss().then((data) => {
+      const exercise: ExerciseCard = data.data;
+      this.addExerciseToList(exercise)
+    });
     
     return await addExerciseModal.present();
+  }
+
+  addExerciseToList(exercise: ExerciseCard): void{
+    const p: HTMLElement = document.getElementById('exercises');
+    const chip = document.createElement('ion-chip');
+    chip.textContent = exercise.title;
+    p.appendChild(chip);
   }
 
   ngOnInit() {

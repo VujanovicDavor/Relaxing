@@ -8,7 +8,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
-  <ion-searchbar showCancelButton="focus"></ion-searchbar>
+  <ion-searchbar [(ngModel)]="input" (ionInput)="updateList()" showCancelButton="focus"></ion-searchbar>
   <div id="exercises">
   </div>
 </ion-content>

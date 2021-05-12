@@ -3,6 +3,7 @@ import { Storage } from '@ionic/storage-angular';
 import { ActionSheetController } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
 import { ManageplaylistsPage } from './manageplaylists/manageplaylists.page';
+import * as jsonData from '../default_data/data.json';
 
 
 @Component({
@@ -73,7 +74,6 @@ export class Tab1Page implements OnInit{
 
   async ngOnInit(){
     await this.storage.create();
-    //this.storage.clear();
   }
 
 }
