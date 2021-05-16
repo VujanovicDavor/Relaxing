@@ -2,28 +2,25 @@ export class ExerciseCard{
     title: string;
     content: string;
     img: string;
-    scoreUpperBorder: number;
-    scoreLowerBorder: number;
     id: string;
+    type: string;
 
     constructor(){
-        this.scoreUpperBorder = 0;
-        this.scoreUpperBorder = 0;
         this.content = '';
         this.img = '';
         this.title = '';
+        this.type = '';
     }
 
-    createCard(id: string ,title: string, content: string, img: string, scoreLowerBorder: number, scoreUpperBorder){
-        this.scoreUpperBorder = scoreUpperBorder;
-        this.scoreLowerBorder = scoreLowerBorder;
+    createCard(id: string ,title: string, content: string, img: string, type: string){
         this.content = content;
         this.img = img;
         this.title = title;
         this.id = id;
+        this.type = type;
     }
 
-    getCard(): HTMLElement{
+    toCard(): HTMLElement{
         // init
         const ionCard: HTMLElement = document.createElement('ion-card');
         const ionHeader: HTMLElement = document.createElement('ion-card-header');

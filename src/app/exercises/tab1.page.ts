@@ -3,7 +3,8 @@ import { Storage } from '@ionic/storage-angular';
 import { ActionSheetController } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
 import { ManageplaylistsPage } from './manageplaylists/manageplaylists.page';
-import * as jsonData from '../default_data/data.json';
+import { ExerciseCard } from 'src/models/exercise.card';
+import * as JSONdata from "../default_data/data.json";
 
 
 @Component({
@@ -15,6 +16,7 @@ import * as jsonData from '../default_data/data.json';
 export class Tab1Page implements OnInit{
 
   constructor(private storage: Storage, private actionSheetController: ActionSheetController, private modalController: ModalController) {}
+
 
   async showActionSheet(){
     const actionSheet = await this.actionSheetController.create({
@@ -74,6 +76,32 @@ export class Tab1Page implements OnInit{
 
   async ngOnInit(){
     await this.storage.create();
+
+    await this.storage.get(EXERCISE_KEY).then((cards: ExerciseCard[]) => {
+      if(cards == null || cards.length == 0){
+        cards = new Array();
+        
+        for(let i = 0; i < JSONdata.exercises.length; i++){
+          const card: ExerciseCard = new ExerciseCard();
+          card.createCard(String(JSONdata.exercises[i].id), JSONdata.exercises[i].title, JSONdata.exercises[i].description, JSONdata.exercises[i].imageAddress, JSONdata.exercises[i].type);
+          cards.push(card);
+        }
+        this.storage.set(EXERCISE_KEY, cards);
+      }
+    });
+
+    this.loadCards();
   }
 
+
+  async loadCards(){
+    this.storage.get(EXERCISE_KEY).then((exercises: ExerciseCard[]) => {
+      const div: HTMLElement = document.getElementById('exercises');
+      for(let i = 0; i < exercises.length; i++){
+        console.log(exercises[i].toCard())
+      }
+    })
+  }
 }
+
+const EXERCISE_KEY = 'exercises';

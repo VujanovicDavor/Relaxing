@@ -26,8 +26,11 @@ export class PlaylistpopoverPage implements OnInit {
     });
 
     addExerciseModal.onDidDismiss().then((data) => {
-      const exercise: ExerciseCard = data.data;
-      this.addExerciseToList(exercise)
+      return data.data;
+    }).then((data: ExerciseCard) => {
+      if(data != null){
+        this.addExerciseToList(data);
+      }
     });
     
     return await addExerciseModal.present();

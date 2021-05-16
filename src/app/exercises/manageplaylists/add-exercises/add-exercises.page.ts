@@ -30,7 +30,10 @@ export class AddExercisesPage implements OnInit {
         this.items = new Array();
 
         exercises.forEach(exercise => { // append items from storage to list
-          list.appendChild(exercise.toListItem());
+          const button: HTMLElement = document.createElement('ion-button');
+          button.id = exercise.title;
+          button.appendChild(exercise.toListItem());
+          list.appendChild(button);
           this.items.push(exercise.toListItem());
         });
       }
@@ -47,7 +50,7 @@ export class AddExercisesPage implements OnInit {
   }
 
   returnExercise(){
-    
+
   }
 }
 

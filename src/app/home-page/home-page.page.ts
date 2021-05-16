@@ -53,9 +53,7 @@ export class HomePagePage implements OnInit {
   async loadCards(score: number){
     this.storage.get(CARDS_KEY).then((cards: ExerciseCard[]) => {
       cards.forEach(element => {
-        if(element.scoreLowerBorder <= score && score <= element.scoreUpperBorder){
-          this.presentCard(element);
-        }
+        
       });
     }).catch(()=>{
       console.log('Error in loadCards');
@@ -64,7 +62,7 @@ export class HomePagePage implements OnInit {
 
   presentCard(card: ExerciseCard){
     const cardDiv: HTMLElement = document.getElementById('moodCards');
-    cardDiv.appendChild(card.getCard());
+    cardDiv.appendChild(card.toCard());
   }
 
   async addMoodObject(toInsert: Mood){

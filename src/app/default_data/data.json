@@ -1,6 +1,18 @@
-[
-    {
-        "id": 1,
-        "name": "Test"
-    }
-]
+{
+    "exercises": [
+        {
+            "id": 1,
+            "title": "Depth abdominal breathing",
+            "description": "Sit up straight and close your eyes. Then inhale 5 seconds and exhale 5 seconds. Inhale through your nose and exhale through your mouth. It is important to breath rhythmically and to concentrate fully on your breathing. Repeat this exercise till the strain falls off!",
+            "type": "Breathing Exercise",
+            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6525__gallery-horizontal/anspannung-entspannung.jpg"
+        },
+        {
+            "id": 2,
+            "title": "Strain - Relaxation",
+            "description": "Inhale slowly through your nose. Then contract all your muscles as much as you can. Hold your breath for 10 - 20 seconds. Afterwards exhale and relax your body.",
+            "type": "Breathing Exercise",
+            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6524__gallery-horizontal/entspannungs%C3%BCbungen_2.jpg"
+        }
+    ]
+}
