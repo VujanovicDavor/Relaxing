@@ -62,7 +62,7 @@ export class HomePagePage implements OnInit {
 
   presentCard(card: ExerciseCard){
     const cardDiv: HTMLElement = document.getElementById('moodCards');
-    cardDiv.appendChild(card.toCard());
+    cardDiv.appendChild(ExerciseCard.toCard(card));
   }
 
   async addMoodObject(toInsert: Mood){

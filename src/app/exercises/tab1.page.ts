@@ -78,7 +78,7 @@ export class Tab1Page implements OnInit{
     await this.storage.create();
 
     await this.storage.get(EXERCISE_KEY).then((cards: ExerciseCard[]) => {
-      if(cards == null || cards.length == 0){
+      if(cards == null || cards.length == 0){ // stores default exercises if the user runs the app the first time
         cards = new Array();
         
         for(let i = 0; i < JSONdata.exercises.length; i++){
@@ -94,11 +94,11 @@ export class Tab1Page implements OnInit{
   }
 
 
-  async loadCards(){
+  async loadCards(){ // loads the cards
     this.storage.get(EXERCISE_KEY).then((exercises: ExerciseCard[]) => {
       const div: HTMLElement = document.getElementById('exercises');
       for(let i = 0; i < exercises.length; i++){
-        console.log(exercises[i].toCard())
+        div.appendChild(ExerciseCard.toCard(exercises[i]));
       }
     })
   }

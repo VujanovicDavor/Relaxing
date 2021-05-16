@@ -20,7 +20,11 @@ export class ExerciseCard{
         this.type = type;
     }
 
-    toCard(): HTMLElement{
+    static toCard(card: ExerciseCard): HTMLElement{
+        if(card == null){
+            return null;
+        }
+
         // init
         const ionCard: HTMLElement = document.createElement('ion-card');
         const ionHeader: HTMLElement = document.createElement('ion-card-header');
@@ -29,9 +33,9 @@ export class ExerciseCard{
         const img: HTMLImageElement = document.createElement('img');
 
         // declare
-        ionTitle.textContent = this.title;
-        ionContent.textContent = this.content;
-        img.src = this.img;
+        ionTitle.textContent = card.title;
+        ionContent.textContent = card.content;
+        img.src = card.img;
 
         // append
         ionHeader.appendChild(ionTitle);
@@ -42,12 +46,12 @@ export class ExerciseCard{
         return ionCard;
     }
 
-    toListItem(): HTMLElement{
-        //init
-        const item: HTMLElement = document.createElement('ion-item');
+    static toListItem(card: ExerciseCard): HTMLIonItemElement{
+        // init
+        const item: HTMLIonItemElement = document.createElement('ion-item');
         
-        //declare
-        item.textContent = this.title;
+        // declare
+        item.textContent = card.title;
         return item;
     }
 }

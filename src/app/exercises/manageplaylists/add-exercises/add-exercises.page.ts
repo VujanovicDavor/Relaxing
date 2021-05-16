@@ -26,31 +26,41 @@ export class AddExercisesPage implements OnInit {
       if(exercises == null || exercises.length == 0){
         document.getElementById('exercises').textContent = 'No exercises found!';
       } else {
-        const list: HTMLElement = document.createElement('ion-list');
-        this.items = new Array();
-
-        exercises.forEach(exercise => { // append items from storage to list
-          const button: HTMLElement = document.createElement('ion-button');
-          button.id = exercise.title;
-          button.appendChild(exercise.toListItem());
-          list.appendChild(button);
-          this.items.push(exercise.toListItem());
-        });
+        this.loadItems(exercises);
       }
     });
 
   }
 
-  updateList(){
+  loadItems(exercises: ExerciseCard[]){
+    const div: HTMLElement = document.getElementById('list-exercises');
+    const list: HTMLElement = document.createElement('ion-list');
+    this.items = new Array();
+
+    exercises.forEach(exercise => { // append items from storage to list
+      const item: HTMLElement = ExerciseCard.toListItem(exercise);
+      this.items.push(item);
+      const button: HTMLIonButtonElement = document.createElement('ion-button');
+      const icon: HTMLIonIconElement = document.createElement('ion-icon');
+      icon.name = 'list-outline';
+      button.slot = 'end';
+      button.appendChild(icon);
+      item.appendChild(button);
+      list.appendChild(item);
+    });
+    div.appendChild(list);
+  }
+
+  updateList(){ // update list with items
     this.items.forEach(element => {
       const txt: string = element.textContent;
-      const present: boolean = txt.toLowerCase().indexOf(this.input) > -1;
+      const present: boolean = txt.toLowerCase().indexOf(this.input.toLowerCase()) > -1;
       element.style.display = present ? 'block' : 'none';
     });
   }
 
   returnExercise(){
-
+    
   }
 }
 
