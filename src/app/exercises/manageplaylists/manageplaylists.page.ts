@@ -39,6 +39,14 @@ export class ManageplaylistsPage implements OnInit {
       translucent: true,
     });
 
+    popover.onDidDismiss().then((data) => {
+      return data.data;
+    }).then((data: Playlist) => {
+        if(data != null){
+          //present new Playlist
+        }
+    });
+
     await popover.present();
     //const {role} = await popover.onDidDismiss();
   }

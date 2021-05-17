@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
-import { ExerciseCard } from '../../../../Models/exercise.card';
+import { ExerciseCard } from '../../../../models/exercise.card';
 import { ModalController } from '@ionic/angular';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-add-exercises',
@@ -16,7 +17,7 @@ export class AddExercisesPage implements OnInit {
   input: string;
 
   closeModal(){
-    this.modalController.dismiss();
+    this.modalController.dismiss(-1);
   }
 
   async ngOnInit() {
@@ -37,13 +38,14 @@ export class AddExercisesPage implements OnInit {
     const list: HTMLElement = document.createElement('ion-list');
     this.items = new Array();
 
-    exercises.forEach(exercise => { // append items from storage to list
-      const item: HTMLElement = ExerciseCard.toListItem(exercise);
+    exercises.forEach(element => { // append items from storage to list
+      const item: HTMLElement = ExerciseCard.toListItem(element);
       this.items.push(item);
       const button: HTMLIonButtonElement = document.createElement('ion-button');
       const icon: HTMLIonIconElement = document.createElement('ion-icon');
       icon.name = 'list-outline';
       button.slot = 'end';
+      button.addEventListener('click', (e: Event) => this.returnExercise(Number(element.id)));
       button.appendChild(icon);
       item.appendChild(button);
       list.appendChild(item);
@@ -59,8 +61,8 @@ export class AddExercisesPage implements OnInit {
     });
   }
 
-  returnExercise(){
-    
+  returnExercise(id: Number){
+    this.modalController.dismiss(id);
   }
 }
 

@@ -10,20 +10,25 @@
       <ion-label position="floating">
         Name
       </ion-label>
-      <ion-input></ion-input>
+      <ion-input [(ngModel)]="inputPlaylistName" (ionChange)="updateStoreButton()"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="floating">
         Description
       </ion-label>
-      <ion-textarea></ion-textarea>
+      <ion-textarea [(ngModel)]="inputPlaylistDescription"></ion-textarea>
     </ion-item>
     <ion-item>
       <ion-label>Exercises:</ion-label>
       <ion-button (click)="showAddExerciseModal()" item-right><ion-icon name="add"></ion-icon></ion-button>
-      <p id="exercises">
+    </ion-item>
+    <ion-item [hidden]="isHidden">
+      <p id="chip-exercises">
         
       </p>
+    </ion-item>
+    <ion-item>
+      <ion-button id="storeNewPlaylistButton" (click)="storePlaylist()">Store</ion-button>
     </ion-item>
   </ion-list>
 </ion-content>
