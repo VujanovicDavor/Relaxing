@@ -10,7 +10,7 @@
       <ion-label position="floating">
         Name
       </ion-label>
-      <ion-input [(ngModel)]="inputPlaylistName" (ionChange)="updateStoreButton()"></ion-input>
+      <ion-input [(ngModel)]="inputPlaylistName" (ionChange)="updateInput()"></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="floating">
@@ -21,11 +21,11 @@
     <ion-item>
       <ion-label>Exercises:</ion-label>
       <ion-button (click)="showAddExerciseModal()" item-right><ion-icon name="add"></ion-icon></ion-button>
-    </ion-item>
+    </ion-item> 
     <ion-item [hidden]="isHidden">
-      <p id="chip-exercises">
+      <ion-list id="exercises_popover_list">
         
-      </p>
+      </ion-list>
     </ion-item>
     <ion-item>
       <ion-button id="storeNewPlaylistButton" (click)="storePlaylist()">Store</ion-button>

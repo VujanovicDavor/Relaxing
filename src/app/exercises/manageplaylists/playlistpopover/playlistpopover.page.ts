@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, NavParams } from '@ionic/angular';
-import { ModalController } from '@ionic/angular';
+import { NavController, NavParams, ModalController, AlertController, PopoverController } from '@ionic/angular';
 import { ExerciseCard } from 'src/models/exercise.card';
 import { AddExercisesPage } from '../add-exercises/add-exercises.page';
 import { Storage } from '@ionic/storage-angular';
-import { AlertController } from '@ionic/angular';
 import { Playlist } from '../../../../models/playlist';
-import { EXERCISE_KEY, PLAYLIST_KEY } from '../../../../models/keys'; 
+import { EXERCISE_KEY, PLAYLIST_KEY } from '../../../../models/keys';
 
 @Component({
   selector: 'app-playlistpopover',
@@ -23,7 +21,7 @@ export class PlaylistpopoverPage implements OnInit {
   isEmptyExerciseList: boolean;
 
 
-  constructor(private navParams: NavParams, private modalController: ModalController, private storage: Storage, private alertController: AlertController) {
+  constructor(private popoverController: PopoverController, private navParams: NavParams, private modalController: ModalController, private storage: Storage, private alertController: AlertController) {
     this.title = navParams.get('title');
     this.list = new Array();
     this.isHidden = true;
@@ -33,7 +31,7 @@ export class PlaylistpopoverPage implements OnInit {
     this.isEmptyExerciseList = true;
   }
 
-  setTitle(){
+  private setTitle(){
     document.getElementById('title').textContent = this.title;    
   }
 
@@ -53,7 +51,7 @@ export class PlaylistpopoverPage implements OnInit {
     return await addExerciseModal.present();
   }
 
-  containsElement(id: Number): boolean{
+  private containsElement(id: Number): boolean{
     for(let i = 0; i < this.list.length; i++){
       if(Number(this.list[i].id) == id){
         return true;
@@ -99,7 +97,7 @@ export class PlaylistpopoverPage implements OnInit {
         text: 'Remove',
         role: 'destructive',
         handler: () => {
-          const chip: HTMLIonChipElement = <HTMLIonChipElement>document.getElementById(EXERCISE_CHIP_ID + id);
+          const chip: HTMLIonChipElement = <HTMLIonChipElement>document.getElementById(EXERCISE_SLID_ITEM_ID + id);
           chip.parentNode.removeChild(chip);
           
           for(let i = 0; i < this.list.length; i++){
@@ -129,20 +127,32 @@ export class PlaylistpopoverPage implements OnInit {
     this.isHidden = false;
 
     // init
-    const p: HTMLElement = document.getElementById('chip-exercises');
-    const chip: HTMLIonChipElement = document.createElement('ion-chip');
-    const icon: HTMLIonIconElement = document.createElement('ion-icon');
+    const list: HTMLIonListElement = <HTMLIonListElement> document.getElementById('exercises_popover_list');
+    const item: HTMLIonItemElement = document.createElement('ion-item');
     const label: HTMLIonLabelElement = document.createElement('ion-label');
+    const icon: HTMLIonIconElement = document.createElement('ion-icon');
+    const slidingItem: HTMLIonItemSlidingElement = document.createElement('ion-item-sliding');
+    const optionsItem: HTMLIonItemOptionsElement = document.createElement('ion-item-options');
+    const deleteButton: HTMLIonButtonElement = document.createElement('ion-button');
+    const deleteIcon: HTMLIonIconElement = document.createElement('ion-icon');
 
     // logic
-    icon.name = 'close';
     label.textContent = exercise.title;
-    chip.id = EXERCISE_CHIP_ID + exercise.id;
-    chip.addEventListener('click', () => this.presentDeleteExerciseAlert(Number(exercise.id)));
+    icon.name = 'reorder-three-outline';
+    icon.slot = 'end';
+    deleteIcon.name = 'trash';
+    deleteButton.addEventListener('click', (e: Event) => this.presentDeleteExerciseAlert(Number(exercise.id)));
+    deleteButton.color = 'danger';
+    optionsItem.side = 'end';
 
-    chip.appendChild(label);
-    chip.appendChild(icon);
-    p.appendChild(chip);
+    // append
+    item.appendChild(label);
+    deleteButton.appendChild(deleteIcon);
+    optionsItem.appendChild(deleteButton)
+    slidingItem.appendChild(item);
+    slidingItem.appendChild(optionsItem);
+    slidingItem.id = EXERCISE_SLID_ITEM_ID + exercise.id;
+    list.appendChild(slidingItem);
 
     this.isEmptyExerciseList = false;
     this.disableStoreButton();
@@ -154,7 +164,7 @@ export class PlaylistpopoverPage implements OnInit {
     this.disableStoreButton();
   }
 
-  disableStoreButton(){
+  private disableStoreButton(){
     const button: HTMLIonButtonElement = <HTMLIonButtonElement> document.getElementById('storeNewPlaylistButton');
     
     if(!this.isEmptyExerciseList && !this.isEmptyInput){
@@ -164,7 +174,7 @@ export class PlaylistpopoverPage implements OnInit {
     }
   }
 
-  updateStoreButton(){
+  private updateInput(){
     if(this.inputPlaylistName.length != 0){
       this.isEmptyInput = false;
     } else {
@@ -174,7 +184,7 @@ export class PlaylistpopoverPage implements OnInit {
     this.disableStoreButton();
   }
 
-  async storePlaylist(){
+  private async storePlaylist(){
     const newPlaylist: Playlist = new Playlist();
     
     this.storage.get(PLAYLIST_KEY).then((playlists: Playlist[]) => {
@@ -187,8 +197,8 @@ export class PlaylistpopoverPage implements OnInit {
       this.storage.set(PLAYLIST_KEY, playlists);
     });
 
-    this.modalController.dismiss(newPlaylist);
+    this.popoverController.dismiss(newPlaylist);
   }
 
 }
-const EXERCISE_CHIP_ID = 'exerciseChip';
+const EXERCISE_SLID_ITEM_ID = 'slide_item_';
