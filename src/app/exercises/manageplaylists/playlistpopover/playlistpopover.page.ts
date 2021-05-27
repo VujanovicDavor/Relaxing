@@ -12,27 +12,27 @@ import { EXERCISE_KEY, PLAYLIST_KEY } from '../../../../models/keys';
   styleUrls: ['./playlistpopover.page.scss'],
 })
 export class PlaylistpopoverPage implements OnInit {
-  title: string = null;
   list: Array<ExerciseCard>;
   isHidden: boolean;
   inputPlaylistName: string;
   inputPlaylistDescription: string;
   isEmptyInput: boolean;
   isEmptyExerciseList: boolean;
+  playlist: Playlist;
 
 
   constructor(private popoverController: PopoverController, private navParams: NavParams, private modalController: ModalController, private storage: Storage, private alertController: AlertController) {
-    this.title = navParams.get('title');
-    this.list = new Array();
+    this.playlist = navParams.get('playlist');
+    this.list = this.playlist.cards;
     this.isHidden = true;
-    this.inputPlaylistName = '';
-    this.inputPlaylistDescription = '';
+    this.inputPlaylistName = this.playlist.name
+    this.inputPlaylistDescription = this.playlist.description;
     this.isEmptyInput = true;
     this.isEmptyExerciseList = true;
   }
 
-  private setTitle(){
-    document.getElementById('title').textContent = this.title;    
+  private setTitle(title: string){
+    document.getElementById('title').textContent = title;    
   }
 
   async showAddExerciseModal(){
@@ -97,8 +97,8 @@ export class PlaylistpopoverPage implements OnInit {
         text: 'Remove',
         role: 'destructive',
         handler: () => {
-          const chip: HTMLIonChipElement = <HTMLIonChipElement>document.getElementById(EXERCISE_SLID_ITEM_ID + id);
-          chip.parentNode.removeChild(chip);
+          const item: HTMLIonItemElement = <HTMLIonItemElement>document.getElementById(EXERCISE_SLIDE_ITEM_ID + id);
+          item.parentNode.removeChild(item);
           
           for(let i = 0; i < this.list.length; i++){
             if(id == Number(this.list[i].id)){
@@ -151,7 +151,7 @@ export class PlaylistpopoverPage implements OnInit {
     optionsItem.appendChild(deleteButton)
     slidingItem.appendChild(item);
     slidingItem.appendChild(optionsItem);
-    slidingItem.id = EXERCISE_SLID_ITEM_ID + exercise.id;
+    slidingItem.id = EXERCISE_SLIDE_ITEM_ID + exercise.id;
     list.appendChild(slidingItem);
 
     this.isEmptyExerciseList = false;
@@ -160,8 +160,12 @@ export class PlaylistpopoverPage implements OnInit {
 
   async ngOnInit() {
     await this.storage.create();
-    this.setTitle();
+    this.setTitle(this.playlist.name);
     this.disableStoreButton();
+    
+    for(let i = 0; i < this.list.length; i++){
+      this.addExerciseToHTML(this.list[i]);
+    }
   }
 
   private disableStoreButton(){
@@ -192,8 +196,21 @@ export class PlaylistpopoverPage implements OnInit {
         playlists = new Array();
       }
 
-      newPlaylist.createNewPlaylist(String(playlists.length), this.inputPlaylistName, this.inputPlaylistDescription, this.list);
-      playlists.push(newPlaylist);
+      this.playlist.cards = this.list;
+      this.playlist.description = this.inputPlaylistDescription;
+      this.playlist.name = this.inputPlaylistName;
+
+      if(this.playlist.id == null || this.playlist.id == ''){
+        this.playlist.id = String(playlists.length);
+        playlists.push(this.playlist);
+      } else {
+        for(let i = 0; i < playlists.length; i++){
+          if(this.playlist.id == playlists[i].id){
+            playlists[i] = this.playlist;
+          }
+        }
+      }
+
       this.storage.set(PLAYLIST_KEY, playlists);
     });
 
@@ -201,4 +218,4 @@ export class PlaylistpopoverPage implements OnInit {
   }
 
 }
-const EXERCISE_SLID_ITEM_ID = 'slide_item_';
+const EXERCISE_SLIDE_ITEM_ID = 'slide_item_';

@@ -2,8 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { Playlist } from 'src/models/playlist';
-import { PopoverController } from '@ionic/angular';
+import { PopoverController, AlertController } from '@ionic/angular';
 import { PlaylistpopoverPage } from './playlistpopover/playlistpopover.page';
+import { PLAYLIST_KEY } from 'src/models/keys';
+import { STRING_TYPE } from '@angular/compiler';
 
 @Component({
   selector: 'app-manageplaylists',
@@ -12,7 +14,7 @@ import { PlaylistpopoverPage } from './playlistpopover/playlistpopover.page';
 })
 export class ManageplaylistsPage implements OnInit {
 
-  constructor(private modalController: ModalController, private storage: Storage, private popoverController: PopoverController) { }
+  constructor(private alertController: AlertController, private modalController: ModalController, private storage: Storage, private popoverController: PopoverController) { }
 
   closeModal(){
     this.modalController.dismiss();
@@ -33,14 +35,15 @@ export class ManageplaylistsPage implements OnInit {
     });
   }
 
-  async openPlaylistPopover(title: string){
-    if(title == null){
-      title = 'New Playlist';
+  async openPlaylistPopover(playlist: Playlist){
+    if(playlist == null){
+      playlist = new Playlist();
+      playlist.name = 'New Playlist';
     }
 
     const popover = await this.popoverController.create({
       component: PlaylistpopoverPage,
-      componentProps: {'title': title},
+      componentProps: {'playlist': playlist},
       translucent: true,
     });
 
@@ -53,6 +56,55 @@ export class ManageplaylistsPage implements OnInit {
           this.loadPlaylist(data);
         }
     });
+  }
+
+  async openOptionsAlert(playlistId: Number){
+    console.log(playlistId + 'in optAlert')
+
+    const optAlert = await this.alertController.create({
+      header: 'Select:',
+      message: 'Do you want to edit or delete your Playlist',
+      buttons: [{
+        text: 'Edit',
+        handler: () => {
+          let editPlaylist: Playlist = new Playlist();
+
+          this.storage.get(PLAYLIST_KEY).then((data: Playlist[]) => {
+            for(let i = 0; i < data.length; i++){
+              if(playlistId == Number(data[i].id)){
+                return data[i]; 
+              }
+            }
+          }).then((editPlaylist) => {
+            this.openPlaylistPopover(editPlaylist);
+          });
+        }
+      },{
+        text: 'Delete',
+        role: 'destructive',
+        handler: () => {
+          const card: HTMLIonCardElement = <HTMLIonCardElement> document.getElementById(CARD_ID + String(playlistId));
+          console.log(CARD_ID + playlistId);
+          card.parentNode.removeChild(card);
+
+          this.storage.get(PLAYLIST_KEY).then((data: Playlist[]) => {
+            if(data != null){
+              for(let i = 0; i < data.length; i++){
+                if(data[i].id == String(playlistId)){
+                  data.splice(i, 1);
+                }
+              }
+              this.storage.set(PLAYLIST_KEY, data);
+            }
+          })
+        }
+      }
+    ]
+    });
+
+    await optAlert.present();
+    const { role } = await optAlert.onDidDismiss();
+    console.log(role);
   }
 
   private loadPlaylist(playlist: Playlist){
@@ -68,25 +120,35 @@ export class ManageplaylistsPage implements OnInit {
     const div: HTMLDivElement = <HTMLDivElement> document.getElementById('playlist_cards');
     const card: HTMLIonCardElement = document.createElement('ion-card');
     const cardHeader: HTMLIonCardHeaderElement = document.createElement('ion-card-header');
-    const cardTitle: HTMLIonCardTitleElement = document.createElement('ion-card-title');
     const cardContent: HTMLIonCardContentElement = document.createElement('ion-card-content');
     const label: HTMLIonLabelElement = document.createElement('ion-label');
     const labelItem: HTMLIonItemElement = document.createElement('ion-item');
-    const editIcon: HTMLIonIconElement = document.createElement('ion-icon');
-    const trashIcon: HTMLIonIconElement = document.createElement('ion-icon');
+    const optionButton: HTMLIonButtonElement = document.createElement('ion-button');
+    const optionIcon: HTMLIonIconElement = document.createElement('ion-icon');
+    const headItem: HTMLIonItemElement = document.createElement('ion-item');
+    const headTitle: HTMLIonLabelElement = document.createElement('ion-label');
+    const hTitle: HTMLElement = document.createElement('h2');
 
-    editIcon.name = 'create-outline';
-    editIcon.slot = 'start';
-    trashIcon.slot = 'end';
-    trashIcon.name = 'trash';
+    card.id = CARD_ID + String(playlist.id);
+    console.log(card.id);
+    console.log(playlist.id);
+
+    optionIcon.name = 'ellipsis-vertical-outline';
+    optionButton.appendChild(optionIcon);
+    optionButton.slot = 'end';
+    optionButton.addEventListener('click', (e: Event) => this.openOptionsAlert(Number(playlist.id)));
+
+    hTitle.textContent = String(playlist.name);
+    headTitle.appendChild(hTitle);
+    headItem.appendChild(headTitle);
+    headItem.appendChild(optionButton);
+
+    cardHeader.appendChild(headItem);
+
     label.textContent = 'Exercises:';
     labelItem.appendChild(label);
-    cardTitle.textContent = String(playlist.name);
     cardContent.textContent = String(playlist.description);
 
-    cardTitle.appendChild(editIcon);
-    cardTitle.appendChild(trashIcon);
-    cardHeader.appendChild(cardTitle);
     card.appendChild(cardHeader);
     card.appendChild(cardContent);
     card.appendChild(labelItem);
@@ -112,3 +174,4 @@ export class ManageplaylistsPage implements OnInit {
 }
 
 const PLAYLIST_STORAGE_KEY = 'playlists';
+const CARD_ID = 'playlist_card_'
