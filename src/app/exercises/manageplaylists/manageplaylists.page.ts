@@ -53,9 +53,22 @@ export class ManageplaylistsPage implements OnInit {
       return data.data;
     }).then((data: Playlist) => {
         if(data != null){
-          this.loadPlaylist(data);
+          const card: HTMLIonCardElement = <HTMLIonCardElement> document.getElementById(CARD_ID + data.id);
+
+          if(card == null){
+            this.loadPlaylist(data);
+          } else {
+            this.removePlaylistFromHTML(data.id);
+            this.loadPlaylist(data);  
+          }
         }
     });
+  }
+
+  private removePlaylistFromHTML(playlistId: String){
+    const card: HTMLIonCardElement = <HTMLIonCardElement> document.getElementById(CARD_ID + String(playlistId));
+    console.log(CARD_ID + playlistId);
+    card.parentNode.removeChild(card);
   }
 
   async openOptionsAlert(playlistId: Number){
@@ -75,18 +88,17 @@ export class ManageplaylistsPage implements OnInit {
                 return data[i]; 
               }
             }
-          }).then((editPlaylist) => {
+          }).then(async (editPlaylist: Playlist) => {
             this.openPlaylistPopover(editPlaylist);
+            console.log('FINISHED');
           });
         }
       },{
         text: 'Delete',
         role: 'destructive',
         handler: () => {
-          const card: HTMLIonCardElement = <HTMLIonCardElement> document.getElementById(CARD_ID + String(playlistId));
-          console.log(CARD_ID + playlistId);
-          card.parentNode.removeChild(card);
-
+          this.removePlaylistFromHTML(String(playlistId));
+          
           this.storage.get(PLAYLIST_KEY).then((data: Playlist[]) => {
             if(data != null){
               for(let i = 0; i < data.length; i++){
