@@ -189,9 +189,7 @@ export class PlaylistpopoverPage implements OnInit {
   }
 
   private async storePlaylist(){
-    const newPlaylist: Playlist = new Playlist();
-    
-    this.storage.get(PLAYLIST_KEY).then((playlists: Playlist[]) => {
+    this.storage.get(PLAYLIST_KEY).then(async (playlists: Playlist[]) => {
       if(playlists == null || playlists.length == 0){
         playlists = new Array();
       }
@@ -210,11 +208,12 @@ export class PlaylistpopoverPage implements OnInit {
           }
         }
       }
+      await this.storage.set(PLAYLIST_KEY, playlists);
 
-      this.storage.set(PLAYLIST_KEY, playlists);
+      return this.playlist;
+    }).then((data: Playlist) => {
+      this.popoverController.dismiss(data);
     });
-
-    this.popoverController.dismiss(newPlaylist);
   }
 
 }
