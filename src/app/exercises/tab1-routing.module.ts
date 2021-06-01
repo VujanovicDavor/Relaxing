@@ -9,6 +9,10 @@ const routes: Routes = [
   },  {
     path: 'manageplaylists',
     loadChildren: () => import('./manageplaylists/manageplaylists.module').then( m => m.ManageplaylistsPageModule)
+  },
+  {
+    path: 'manage-exercises',
+    loadChildren: () => import('./manage-exercises/manage-exercises.module').then( m => m.ManageExercisesPageModule)
   }
 
 

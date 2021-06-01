@@ -5,6 +5,7 @@ import { ModalController } from '@ionic/angular';
 import { ManageplaylistsPage } from './manageplaylists/manageplaylists.page';
 import { ExerciseCard } from 'src/models/exercise.card';
 import * as JSONdata from "../default_data/data.json";
+import { ManageExercisesPage } from './manage-exercises/manage-exercises.page';
 
 
 @Component({
@@ -42,8 +43,21 @@ export class Tab1Page implements OnInit{
       {
         text: 'Manage custom Exercise(s)',
         icon: "accessibility-outline",
-        handler: () => {
-          console.log('Pressed Manage exercises');
+        handler: async () => {
+          const modal = await this.modalController.create({
+            component: ManageExercisesPage,
+            componentProps: {exerciseTitle: 'New Exercise'}
+          });
+
+          modal.onDidDismiss().then((data) => {
+            if(data.data == null){
+              console.log('Closed Modal (pressed close)')
+            } else {
+              console.log('Received data');
+            }
+          });
+
+          return await modal.present();
         }
       },
       {

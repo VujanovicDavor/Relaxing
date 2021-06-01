@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="closeModal()">Close</ion-button>
+    </ion-buttons>
+    <ion-title>Manage Exercise</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-label>
+        <h1 id="exercise_label_id"></h1>
+      </ion-label>
+    </ion-card-header>
+    <ion-card-content>
+      <div id="exercise_card_img"></div>
+      <ion-list>
+        <ion-item>
+          <ion-button id="add_photo_button" (click)="addToPhotoGallery()">Add Image</ion-button>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Name</ion-label>
+          <ion-input type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Description</ion-label>
+          <ion-textarea type="text"></ion-textarea>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Duration</ion-label>
+          <ion-input placeholder="Minutes..." type="number"></ion-input>
+          <ion-input placeholder="Seconds..." type="number"></ion-input>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
