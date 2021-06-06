@@ -91,6 +91,8 @@ export class Tab1Page implements OnInit{
   async ngOnInit(){
     await this.storage.create();
 
+    
+
     await this.storage.get(EXERCISE_KEY).then((cards: ExerciseCard[]) => {
       if(cards == null || cards.length == 0){ // stores default exercises if the user runs the app the first time
         cards = new Array();

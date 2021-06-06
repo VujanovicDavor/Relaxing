@@ -1,15 +1,17 @@
 export class ExerciseCard{
-    title: string;
-    content: string;
-    img: string;
-    id: string;
-    type: string;
+    public title: string;
+    public content: string;
+    public img: string;
+    public id: string;
+    public type: string;
+    public fileName: string;
 
     constructor(){
         this.content = '';
         this.img = '';
         this.title = '';
         this.type = '';
+        this.fileName = '';
     }
 
     createCard(id: string ,title: string, content: string, img: string, type: string){
