@@ -14,27 +14,28 @@
         <h1 id="exercise_label_id"></h1>
       </ion-label>
     </ion-card-header>
+    <div id="exercise_card_img"></div>
+
     <ion-card-content>
-      <div id="exercise_card_img"></div>
       <ion-list>
         <ion-item>
           <ion-button id="add_photo_button" (click)="addToPhotoGallery()">Add Image</ion-button>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Name</ion-label>
-          <ion-input type="text"></ion-input>
+          <ion-input [(ngModel)]="inputName" (ionChange)="updateStoreButton()" type="text"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label position="floating">Description</ion-label>
-          <ion-textarea type="text"></ion-textarea>
+          <ion-textarea [(ngModel)]="inputDescription" (ionChange)="updateStoreButton()" type="text"></ion-textarea>
         </ion-item>
         <ion-item>
           <ion-label position="stacked">Duration</ion-label>
-          <ion-input placeholder="Minutes..." type="number"></ion-input>
-          <ion-input placeholder="Seconds..." type="number"></ion-input>
+          <ion-input [(ngModel)]="inputMinutes" (ionChange)="updateStoreButton()" placeholder="Minutes..." type="number"></ion-input>
+          <ion-input [(ngModel)]="inputSeconds" (ionChange)="updateStoreButton()" placeholder="Seconds..." type="number"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-button (click)="storeExericse()">Store</ion-button>
+          <ion-button (click)="storeExericse()" id="exercise_store_button">Store</ion-button>
         </ion-item>
       </ion-list>
     </ion-card-content>

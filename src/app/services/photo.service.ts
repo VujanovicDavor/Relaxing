@@ -2,7 +2,7 @@ import { Injectable, OnInit } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Storage } from '@capacitor/storage';
-import { Dir } from 'node:fs';
+import { Dir, readFile } from 'node:fs';
 import * as jsonData from '../default_data/data.json';
 
 @Injectable({
@@ -21,18 +21,22 @@ export class PhotoService implements OnInit{
       });
       const savedImageFile = await this.savePicture(capturedPhoto);
       this.photos.unshift(savedImageFile);
+      console.log(this.photos);
       return Promise.resolve(savedImageFile.filepath);
     } catch (error) {
       return Promise.reject();
     }
   }
 
-  private async getPhotosFromStorage(){
-    this.photos = await JSON.parse((await Storage.get({ key: this.PHOTO_STORAGE })).value);
+  public async getPhotosFromStorage(){
+    const photoList = await Storage.get({ key: this.PHOTO_STORAGE });
+    this.photos = JSON.parse(photoList.value) || [];
   }
 
-  public async storePhoto(){
-    Storage.set({key: this.PHOTO_STORAGE, value: JSON.stringify(this.photos) })
+  public async storePhotos(){
+    console.log(this.photos);
+    Storage.set( {key: this.PHOTO_STORAGE, value: JSON.stringify(this.photos) });
+    console.log('NO Errror');
   }
 
   public async clearStorage(){
@@ -79,20 +83,35 @@ export class PhotoService implements OnInit{
     }
   }
 
-  async getPhotoByFileName(imgFileName: string){
-    
+  getPhotoByFileName(imgFileName: string): Photo{
+    for(let i = 0; i < this.photos.length; i++){
+      if(this.photos[i].filepath == imgFileName){
+        return this.photos[i];
+      }
+    }
+
+    return null;
   }
 
-  async getWebViewPath(photo: Photo){
-    Filesystem.readFile({
-      path: photo.filepath,
-      directory: Directory.Data
-    });
-    return photo.webviewPath = 'data:image/jpeg;base64,${readFile.data}';
+  public async getWebViewPath(){
+    for(let photo of this.photos){
+      const readFile = await Filesystem.readFile({
+        path: photo.filepath,
+        directory: Directory.Data
+      });
+      photo.webviewPath = `data:image/jpeg;base64,${readFile.data}`;
+    }
   }
 
-  async deletePhotoByFileName(imgFileName: string){
-    Filesystem
+  deletePhotoByFileName(imgFileName: string){
+    for(let i = 0; i < this.photos.length; i++){
+      if(imgFileName == this.photos[i].filepath){
+        this.photos.splice(i, 1);
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private async readAsBase64(cameraPhoto){
@@ -114,7 +133,7 @@ export class PhotoService implements OnInit{
   });
 
   async ngOnInit(){
-    this.getPhotosFromStorage();
+    
   }
 
   public photos: Photo[] = [];

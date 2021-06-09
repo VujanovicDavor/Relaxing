@@ -6,6 +6,7 @@ import { ManageplaylistsPage } from './manageplaylists/manageplaylists.page';
 import { ExerciseCard } from 'src/models/exercise.card';
 import * as JSONdata from "../default_data/data.json";
 import { ManageExercisesPage } from './manage-exercises/manage-exercises.page';
+import { PhotoService } from '../services/photo.service';
 
 
 @Component({
@@ -16,7 +17,7 @@ import { ManageExercisesPage } from './manage-exercises/manage-exercises.page';
 
 export class Tab1Page implements OnInit{
 
-  constructor(private storage: Storage, private actionSheetController: ActionSheetController, private modalController: ModalController) {}
+  constructor(private storage: Storage, private actionSheetController: ActionSheetController, private modalController: ModalController, private photoService: PhotoService) {}
 
 
   async showActionSheet(){
@@ -53,7 +54,9 @@ export class Tab1Page implements OnInit{
             if(data.data == null){
               console.log('Closed Modal (pressed close)')
             } else {
-              console.log('Received data');
+              console.log('HERE NO TOO');   
+              const div: HTMLElement = <HTMLElement> document.getElementById('exercises');
+              div.appendChild(ExerciseCard.toCard(data.data));
             }
           });
 
@@ -91,9 +94,9 @@ export class Tab1Page implements OnInit{
   async ngOnInit(){
     await this.storage.create();
 
-    
+    await this.storage.get(EXERCISE_KEY).then((cards) => {
+      
 
-    await this.storage.get(EXERCISE_KEY).then((cards: ExerciseCard[]) => {
       if(cards == null || cards.length == 0){ // stores default exercises if the user runs the app the first time
         cards = new Array();
         
@@ -102,8 +105,10 @@ export class Tab1Page implements OnInit{
           card.createCard(String(JSONdata.exercises[i].id), JSONdata.exercises[i].title, JSONdata.exercises[i].description, JSONdata.exercises[i].imageAddress, JSONdata.exercises[i].type);
           cards.push(card);
         }
+        card
         this.storage.set(EXERCISE_KEY, cards);
       }
+
     });
 
     this.loadCards();

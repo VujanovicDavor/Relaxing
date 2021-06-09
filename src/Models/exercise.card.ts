@@ -1,3 +1,5 @@
+import { Photo, PhotoService } from '../app/services/photo.service';
+
 export class ExerciseCard{
     public title: string;
     public content: string;
@@ -5,6 +7,9 @@ export class ExerciseCard{
     public id: string;
     public type: string;
     public fileName: string;
+    public minutes: number;
+    public seconds: number;
+    private service: PhotoService;
 
     constructor(){
         this.content = '';
@@ -12,6 +17,9 @@ export class ExerciseCard{
         this.title = '';
         this.type = '';
         this.fileName = '';
+        this.minutes = 0;
+        this.seconds = 0;
+        this.service = new PhotoService();
     }
 
     createCard(id: string ,title: string, content: string, img: string, type: string){
@@ -23,6 +31,8 @@ export class ExerciseCard{
     }
 
     static toCard(card: ExerciseCard): HTMLElement{
+        console.log('But here?');
+
         if(card == null){
             return null;
         }
@@ -37,7 +47,12 @@ export class ExerciseCard{
         // declare
         ionTitle.textContent = card.title;
         ionContent.textContent = card.content;
-        img.src = card.img;
+        
+        if(card.img == null || card.img == ''){
+            img.src = card.getWebViewPath(card.fileName);
+        } else {
+            img.src = card.img;
+        }
 
         // append
         ionHeader.appendChild(ionTitle);
@@ -46,6 +61,12 @@ export class ExerciseCard{
         ionCard.appendChild(ionContent);
 
         return ionCard;
+    }
+
+    getWebViewPath(fileName: string): string {
+        const photo: Photo = this.service.getPhotoByFileName(fileName);
+        console.log('HERE');
+        return photo.webviewPath;
     }
 
     static toListItem(card: ExerciseCard): HTMLIonItemElement{

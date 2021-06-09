@@ -3,6 +3,7 @@ import { ModalController, NavParams, NavController } from '@ionic/angular';
 import { PhotoService, Photo } from '../../services/photo.service';
 import { Storage } from '@ionic/storage-angular';
 import { ExerciseCard } from 'src/models/exercise.card';
+import { EXERCISE_KEY } from 'src/models/keys';
 
 @Component({
   selector: 'app-manage-exercises',
@@ -13,15 +14,25 @@ export class ManageExercisesPage implements OnInit {
 
   exerciseLabel: string;
 
+  inputName: string;
+  inputDescription: string;
+  inputMinutes: number;
+  inputSeconds: number;
+
   exerciseCard: ExerciseCard;
 
   constructor(private modalController: ModalController, private navParams: NavParams, public photoService: PhotoService, private storage: Storage) { 
     this.exerciseLabel = navParams.get('exerciseTitle');
-    this.exerciseCard = new ExerciseCard();
+    this.exerciseCard = navParams.get('exerciseCard');
+
+    if(this.exerciseCard == null){
+      this.exerciseCard = new ExerciseCard();
+    }
 
     if(this.exerciseLabel == null || this.exerciseLabel.length == 0){
       this.exerciseLabel = 'No Label';
     }
+    this.exerciseCard.fileName = '';
   }
 
   async addToPhotoGallery(){
@@ -30,6 +41,8 @@ export class ManageExercisesPage implements OnInit {
         console.log('No photo received');
       }
       this.exerciseCard.fileName = fileName;
+      console.log(this.exerciseCard.fileName);
+      this.displayImageToCard();
       
     }).catch(() => {
       console.log('Error || no photo received');
@@ -38,13 +51,18 @@ export class ManageExercisesPage implements OnInit {
 
   private async displayImageToCard(){
     const photo: Photo = await this.photoService.getPhotoByFileName(this.exerciseCard.fileName);
-    const webViewPath: string = await this.photoService.getWebViewPath(photo);
 
     const div: HTMLElement = document.getElementById('exercise_card_img');
-    const img: HTMLIonImgElement = <HTMLIonImgElement> document.createElement('ion-image');
-    img.src = webViewPath;
+    const img: HTMLImageElement = <HTMLImageElement> document.createElement('img');
+    console.log(photo.webviewPath);
+    img.src = photo.webviewPath;
 
     div.appendChild(img);
+    console.log(div);
+    console.log(photo);
+
+    const button: HTMLIonButtonElement = <HTMLIonButtonElement> document.getElementById('add_photo_button');
+    button.parentNode.removeChild(button);
   }
 
   private changeExerciseLabel(value: string){
@@ -54,11 +72,60 @@ export class ManageExercisesPage implements OnInit {
 
   closeModal(){
     this.modalController.dismiss(null);
-
   }
 
-  storeExericse(){
+  updateStoreButton(){
+    const button: HTMLIonButtonElement = <HTMLIonButtonElement> document.getElementById('exercise_store_button');
+    
+    
+    if(this.inputDescription == null || this.inputName == null || this.inputMinutes == null && this.inputSeconds == null || this.exerciseCard.fileName == ''){
+      button.disabled = true;
+    } else {
+      let sum: number = 0;
+      if(this.inputMinutes == null){
+        sum = this.inputSeconds;
+      } else {
+        sum = this.inputMinutes;
+      }
 
+      if(sum > 0){
+        button.disabled = false;
+      } else {
+        button.disabled = true;
+      }
+    }
+  }
+
+
+  async storeExericse(){
+    this.exerciseCard.content = this.inputDescription;
+    this.exerciseCard.title = this.inputName;
+    this.exerciseCard.minutes = this.inputMinutes;
+    this.exerciseCard.seconds = this.inputSeconds;
+
+    await this.photoService.storePhotos();
+
+    console.log('Here');
+
+    this.storage.get(EXERCISE_KEY).then(async (cards: ExerciseCard[]) => {
+      console.log('ALL cards ' + cards);
+      if(this.exerciseCard.id == null){
+        let nextId = cards[cards.length - 1].id;
+        this.exerciseCard.id = nextId;
+        console.log('HEY am here');
+        cards.push(this.exerciseCard);
+        console.log(cards);
+      } 
+      console.log('HERE NOO');
+      try{
+        await this.storage.set(EXERCISE_KEY, cards);
+      } catch {
+        console.log('Here is  the error');
+      }
+      console.log('Before this');
+    });
+
+    this.modalController.dismiss(this.exerciseCard);
   }
 
 
@@ -66,6 +133,9 @@ export class ManageExercisesPage implements OnInit {
   async ngOnInit() {
     this.storage.create();
     this.changeExerciseLabel(this.exerciseLabel);
+    await this.photoService.getPhotosFromStorage();
+    this.photoService.getWebViewPath();
+    this.updateStoreButton();
   }
 
 }
