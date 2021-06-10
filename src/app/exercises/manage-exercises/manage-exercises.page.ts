@@ -134,7 +134,6 @@ export class ManageExercisesPage implements OnInit {
     this.storage.create();
     this.changeExerciseLabel(this.exerciseLabel);
     await this.photoService.loadPhotosFromStorage();
-    this.photoService.getWebViewPath();
     this.updateStoreButton();
   }
 

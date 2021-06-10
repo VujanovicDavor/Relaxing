@@ -50,13 +50,13 @@ export class Tab1Page implements OnInit{
             componentProps: {exerciseTitle: 'New Exercise'}
           });
 
-          modal.onDidDismiss().then((data) => {
+          modal.onDidDismiss().then(async(data) => {
             if(data.data == null){
               console.log('Closed Modal (pressed close)')
             } else {
               console.log('HERE NO TOO');   
               const div: HTMLElement = <HTMLElement> document.getElementById('exercises');
-              div.appendChild(this.createCustomExerciseCard(data.data));
+              div.appendChild(await this.createCustomExerciseCard(data.data));
             }
           });
 
@@ -112,16 +112,20 @@ export class Tab1Page implements OnInit{
 
     });
     
-    this.loadCards();
+    await this.loadCards();
   }
 
 
   private async loadCards(){ // loads the cards
-    this.storage.get(EXERCISE_KEY).then((exercises: ExerciseCard[]) => {
+    this.storage.get(EXERCISE_KEY).then(async (exercises: ExerciseCard[]) => {
       const div: HTMLElement = document.getElementById('exercises');
       for(let i = 0; i < exercises.length; i++){
         if(exercises[i].img == null || exercises[i].img == ''){
-          // implement default cards and custom cards with different methos (createDefaultExerciseCard and createCustomExerciseCard)
+          this.createCustomExerciseCard(exercises[i]).then((data) => {
+            div.appendChild(data);
+          });
+        } else if(exercises[i].fileName == null || exercises[i].fileName == ''){
+          div.appendChild(this.createDefaultExerciseCard(exercises[i]));
         }
       }
     });
@@ -154,7 +158,7 @@ export class Tab1Page implements OnInit{
     return ionCard;
   }
 
-  private createCustomExerciseCard(card: ExerciseCard): HTMLIonCardElement {
+  private async createCustomExerciseCard(card: ExerciseCard): Promise<HTMLIonCardElement> {
     if(card == null){
       return null;
     }
@@ -169,8 +173,10 @@ export class Tab1Page implements OnInit{
     // declare
     ionTitle.textContent = card.title;
     ionContent.textContent = card.content;
-    this.photoService.loadPhotosFromStorage();
+    await this.photoService.loadPhotosFromStorage();
     const photo: Photo = this.photoService.getPhotoByFileName(card.fileName);
+    console.log(this.photoService);
+    console.log(photo);
     img.src = photo.webviewPath;
 
     // append

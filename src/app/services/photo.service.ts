@@ -29,8 +29,11 @@ export class PhotoService implements OnInit{
   }
 
   public async loadPhotosFromStorage(){
+    console.log('other event');
     const photoList = await Storage.get({ key: this.PHOTO_STORAGE });
+    console.log('EVENT');
     this.photos = JSON.parse(photoList.value) || [];
+    this.setWebViewPathAllPhotos();
   }
 
   public async storePhotos(){
@@ -85,6 +88,8 @@ export class PhotoService implements OnInit{
 
   getPhotoByFileName(imgFileName: string): Photo{
     for(let i = 0; i < this.photos.length; i++){
+      console.log(this.photos[i].filepath);
+
       if(this.photos[i].filepath == imgFileName){
         return this.photos[i];
       }
@@ -93,7 +98,7 @@ export class PhotoService implements OnInit{
     return null;
   }
 
-  public async getWebViewPath(){
+  private async setWebViewPathAllPhotos(){
     for(let photo of this.photos){
       const readFile = await Filesystem.readFile({
         path: photo.filepath,
