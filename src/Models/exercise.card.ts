@@ -9,7 +9,8 @@ export class ExerciseCard{
     public fileName: string;
     public minutes: number;
     public seconds: number;
-    private service: PhotoService;
+    private primaryType: string;
+    private secondaryType: string;
 
     constructor(){
         this.content = '';
@@ -19,62 +20,21 @@ export class ExerciseCard{
         this.fileName = '';
         this.minutes = 0;
         this.seconds = 0;
-        this.service = new PhotoService();
     }
 
-    createCard(id: string ,title: string, content: string, img: string, type: string){
-        this.content = content;
-        this.img = img;
-        this.title = title;
-        this.id = id;
-        this.type = type;
+    public getPrimaryType(): string {
+        return this.primaryType;
     }
 
-    static toCard(card: ExerciseCard): HTMLElement{
-        console.log('But here?');
-
-        if(card == null){
-            return null;
-        }
-
-        // init
-        const ionCard: HTMLElement = document.createElement('ion-card');
-        const ionHeader: HTMLElement = document.createElement('ion-card-header');
-        const ionTitle: HTMLElement = document.createElement('ion-title');
-        const ionContent: HTMLElement = document.createElement('ion-card-content');
-        const img: HTMLImageElement = document.createElement('img');
-
-        // declare
-        ionTitle.textContent = card.title;
-        ionContent.textContent = card.content;
-        
-        if(card.img == null || card.img == ''){
-            img.src = card.getWebViewPath(card.fileName);
-        } else {
-            img.src = card.img;
-        }
-
-        // append
-        ionHeader.appendChild(ionTitle);
-        ionCard.appendChild(ionHeader);
-        ionCard.appendChild(img);
-        ionCard.appendChild(ionContent);
-
-        return ionCard;
+    public setPrimaryType(type: string): void {
+        if(type == ''){} // implement types (create different types)
     }
 
-    getWebViewPath(fileName: string): string {
-        const photo: Photo = this.service.getPhotoByFileName(fileName);
-        console.log('HERE');
-        return photo.webviewPath;
+    public getSecondaryType(): string {
+        return this.secondaryType;
     }
 
-    static toListItem(card: ExerciseCard): HTMLIonItemElement{
-        // init
-        const item: HTMLIonItemElement = document.createElement('ion-item');
-        
-        // declare
-        item.textContent = card.title;
-        return item;
+    public setSecondaryType(type: string){
+        if(type == ''){} //implement types
     }
 }

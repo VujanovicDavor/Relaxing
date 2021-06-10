@@ -39,7 +39,7 @@ export class AddExercisesPage implements OnInit {
     this.items = new Array();
 
     exercises.forEach(element => { // append items from storage to list
-      const item: HTMLElement = ExerciseCard.toListItem(element);
+      const item: HTMLElement = this.toListItem(element);
       this.items.push(item);
       const button: HTMLIonButtonElement = document.createElement('ion-button');
       const icon: HTMLIonIconElement = document.createElement('ion-icon');
@@ -63,6 +63,16 @@ export class AddExercisesPage implements OnInit {
 
   returnExercise(id: Number){
     this.modalController.dismiss(id);
+  }
+
+  private toListItem(card: ExerciseCard): HTMLIonItemElement{
+    if(card == null){
+      return null;
+    }
+
+    const item: HTMLIonItemElement = document.createElement('ion-item');
+    item.textContent = card.title;
+    return item;
   }
 }
 

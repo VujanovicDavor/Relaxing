@@ -6,7 +6,7 @@ import { ManageplaylistsPage } from './manageplaylists/manageplaylists.page';
 import { ExerciseCard } from 'src/models/exercise.card';
 import * as JSONdata from "../default_data/data.json";
 import { ManageExercisesPage } from './manage-exercises/manage-exercises.page';
-import { PhotoService } from '../services/photo.service';
+import { Photo, PhotoService } from '../services/photo.service';
 
 
 @Component({
@@ -56,7 +56,7 @@ export class Tab1Page implements OnInit{
             } else {
               console.log('HERE NO TOO');   
               const div: HTMLElement = <HTMLElement> document.getElementById('exercises');
-              div.appendChild(ExerciseCard.toCard(data.data));
+              div.appendChild(this.createCustomExerciseCard(data.data));
             }
           });
 
@@ -95,33 +95,89 @@ export class Tab1Page implements OnInit{
     await this.storage.create();
 
     await this.storage.get(EXERCISE_KEY).then((cards) => {
-      
-
       if(cards == null || cards.length == 0){ // stores default exercises if the user runs the app the first time
         cards = new Array();
         
         for(let i = 0; i < JSONdata.exercises.length; i++){
           const card: ExerciseCard = new ExerciseCard();
-          card.createCard(String(JSONdata.exercises[i].id), JSONdata.exercises[i].title, JSONdata.exercises[i].description, JSONdata.exercises[i].imageAddress, JSONdata.exercises[i].type);
+          card.title = JSONdata.exercises[i].title;
+          card.content = JSONdata.exercises[i].description;
+          card.img = JSONdata.exercises[i].imageAddress;
+          card.id = String(JSONdata.exercises[i].id);
           cards.push(card);
         }
-        card
         this.storage.set(EXERCISE_KEY, cards);
       }
+      console.log(cards);
 
     });
-
+    
     this.loadCards();
   }
 
 
-  async loadCards(){ // loads the cards
+  private async loadCards(){ // loads the cards
     this.storage.get(EXERCISE_KEY).then((exercises: ExerciseCard[]) => {
       const div: HTMLElement = document.getElementById('exercises');
       for(let i = 0; i < exercises.length; i++){
-        div.appendChild(ExerciseCard.toCard(exercises[i]));
+        if(exercises[i].img == null || exercises[i].img == ''){
+          // implement default cards and custom cards with different methos (createDefaultExerciseCard and createCustomExerciseCard)
+        }
       }
-    })
+    });
+  }
+
+  private createDefaultExerciseCard(card: ExerciseCard): HTMLIonCardElement {
+    if(card == null){
+      return null;
+    }
+
+    // init
+    const ionCard: HTMLIonCardElement = document.createElement('ion-card');
+    const ionHeader: HTMLIonCardHeaderElement = document.createElement('ion-card-header');
+    const ionTitle: HTMLIonTitleElement = document.createElement('ion-title');
+    const ionContent: HTMLIonCardContentElement = document.createElement('ion-card-content');
+    const img: HTMLImageElement = document.createElement('img');
+
+    // declare
+    ionTitle.textContent = card.title;
+    ionContent.textContent = card.content;
+    img.src = card.img;
+
+    // append
+    ionHeader.appendChild(ionTitle);
+    ionCard.appendChild(ionHeader);    
+    ionCard.appendChild(img);
+    ionCard.appendChild(ionContent);
+
+    console.log(ionCard);
+    return ionCard;
+  }
+
+  private createCustomExerciseCard(card: ExerciseCard): HTMLIonCardElement {
+    if(card == null){
+      return null;
+    }
+
+    // init
+    const ionCard: HTMLIonCardElement = document.createElement('ion-card');
+    const ionHeader: HTMLIonCardHeaderElement = document.createElement('ion-card-header');
+    const ionTitle: HTMLIonTitleElement = document.createElement('ion-title');
+    const ionContent: HTMLIonCardContentElement = document.createElement('ion-card-content');
+    const img: HTMLImageElement = document.createElement('img');
+
+    // declare
+    ionTitle.textContent = card.title;
+    ionContent.textContent = card.content;
+    this.photoService.loadPhotosFromStorage();
+    const photo: Photo = this.photoService.getPhotoByFileName(card.fileName);
+    img.src = photo.webviewPath;
+
+    // append
+    ionHeader.appendChild(ionTitle);
+    ionCard.appendChild(ionHeader);    
+    ionCard.appendChild(img);
+    ionCard.appendChild(ionContent);
   }
 }
 

@@ -133,7 +133,7 @@ export class ManageExercisesPage implements OnInit {
   async ngOnInit() {
     this.storage.create();
     this.changeExerciseLabel(this.exerciseLabel);
-    await this.photoService.getPhotosFromStorage();
+    await this.photoService.loadPhotosFromStorage();
     this.photoService.getWebViewPath();
     this.updateStoreButton();
   }
