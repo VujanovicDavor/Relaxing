@@ -32,16 +32,16 @@ export class ManageExercisesPage implements OnInit {
     if(this.exerciseLabel == null || this.exerciseLabel.length == 0){
       this.exerciseLabel = 'No Label';
     }
-    this.exerciseCard.fileName = '';
+    this.exerciseCard.webViewPath = '';
   }
 
   async addToPhotoGallery(){
-    this.photoService.getPhoto().then((fileName) => {
-      if(fileName == null || fileName.length == 0){
+    this.photoService.getPhoto().then((webviewPath) => {
+      if(webviewPath == null || webviewPath.length == 0){
         console.log('No photo received');
       }
-      this.exerciseCard.fileName = fileName;
-      console.log(this.exerciseCard.fileName);
+      this.exerciseCard.webViewPath = webviewPath;
+      console.log(this.exerciseCard.webViewPath);
       this.displayImageToCard();
       
     }).catch(() => {
@@ -50,16 +50,11 @@ export class ManageExercisesPage implements OnInit {
   }
 
   private async displayImageToCard(){
-    const photo: Photo = await this.photoService.getPhotoByFileName(this.exerciseCard.fileName);
-
     const div: HTMLElement = document.getElementById('exercise_card_img');
     const img: HTMLImageElement = <HTMLImageElement> document.createElement('img');
-    console.log(photo.webviewPath);
-    img.src = photo.webviewPath;
+    img.src = this.exerciseCard.webViewPath;
 
     div.appendChild(img);
-    console.log(div);
-    console.log(photo);
 
     const button: HTMLIonButtonElement = <HTMLIonButtonElement> document.getElementById('add_photo_button');
     button.parentNode.removeChild(button);
@@ -78,7 +73,7 @@ export class ManageExercisesPage implements OnInit {
     const button: HTMLIonButtonElement = <HTMLIonButtonElement> document.getElementById('exercise_store_button');
     
     
-    if(this.inputDescription == null || this.inputName == null || this.inputMinutes == null && this.inputSeconds == null || this.exerciseCard.fileName == ''){
+    if(this.inputDescription == null || this.inputName == null || this.inputMinutes == null && this.inputSeconds == null || this.exerciseCard.webViewPath == ''){
       button.disabled = true;
     } else {
       let sum: number = 0;
@@ -102,8 +97,6 @@ export class ManageExercisesPage implements OnInit {
     this.exerciseCard.title = this.inputName;
     this.exerciseCard.minutes = this.inputMinutes;
     this.exerciseCard.seconds = this.inputSeconds;
-
-    await this.photoService.storePhotos();
 
     console.log('Here');
 
@@ -133,7 +126,6 @@ export class ManageExercisesPage implements OnInit {
   async ngOnInit() {
     this.storage.create();
     this.changeExerciseLabel(this.exerciseLabel);
-    await this.photoService.loadPhotosFromStorage();
     this.updateStoreButton();
   }
 

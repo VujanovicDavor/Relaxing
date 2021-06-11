@@ -93,7 +93,6 @@ export class Tab1Page implements OnInit{
 
   async ngOnInit(){
     await this.storage.create();
-
     await this.storage.get(EXERCISE_KEY).then((cards) => {
       if(cards == null || cards.length == 0){ // stores default exercises if the user runs the app the first time
         cards = new Array();
@@ -121,10 +120,8 @@ export class Tab1Page implements OnInit{
       const div: HTMLElement = document.getElementById('exercises');
       for(let i = 0; i < exercises.length; i++){
         if(exercises[i].img == null || exercises[i].img == ''){
-          this.createCustomExerciseCard(exercises[i]).then((data) => {
-            div.appendChild(data);
-          });
-        } else if(exercises[i].fileName == null || exercises[i].fileName == ''){
+          div.appendChild(this.createCustomExerciseCard(exercises[i]));
+        } else if(exercises[i].webViewPath == null || exercises[i].webViewPath == ''){
           div.appendChild(this.createDefaultExerciseCard(exercises[i]));
         }
       }
@@ -158,7 +155,7 @@ export class Tab1Page implements OnInit{
     return ionCard;
   }
 
-  private async createCustomExerciseCard(card: ExerciseCard): Promise<HTMLIonCardElement> {
+  private createCustomExerciseCard(card: ExerciseCard): HTMLIonCardElement {
     if(card == null){
       return null;
     }
@@ -173,17 +170,14 @@ export class Tab1Page implements OnInit{
     // declare
     ionTitle.textContent = card.title;
     ionContent.textContent = card.content;
-    await this.photoService.loadPhotosFromStorage();
-    const photo: Photo = this.photoService.getPhotoByFileName(card.fileName);
-    console.log(this.photoService);
-    console.log(photo);
-    img.src = photo.webviewPath;
+    img.src = card.webViewPath;
 
     // append
     ionHeader.appendChild(ionTitle);
     ionCard.appendChild(ionHeader);    
     ionCard.appendChild(img);
     ionCard.appendChild(ionContent);
+    return ionCard;
   }
 }
 

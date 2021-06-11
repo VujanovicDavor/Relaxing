@@ -6,7 +6,7 @@ export class ExerciseCard{
     public img: string;
     public id: string;
     public type: string;
-    public fileName: string;
+    public webViewPath: string;
     public minutes: number;
     public seconds: number;
     private primaryType: string;
@@ -17,7 +17,7 @@ export class ExerciseCard{
         this.img = '';
         this.title = '';
         this.type = '';
-        this.fileName = '';
+        this.webViewPath = '';
         this.minutes = 0;
         this.seconds = 0;
     }

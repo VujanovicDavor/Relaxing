@@ -22,30 +22,11 @@ export class PhotoService implements OnInit{
       const savedImageFile = await this.savePicture(capturedPhoto);
       this.photos.unshift(savedImageFile);
       console.log(this.photos);
-      return Promise.resolve(savedImageFile.filepath);
+      return Promise.resolve(savedImageFile.webviewPath);
     } catch (error) {
       return Promise.reject();
     }
   }
-
-  public async loadPhotosFromStorage(){
-    console.log('other event');
-    const photoList = await Storage.get({ key: this.PHOTO_STORAGE });
-    console.log('EVENT');
-    this.photos = JSON.parse(photoList.value) || [];
-    this.setWebViewPathAllPhotos();
-  }
-
-  public async storePhotos(){
-    console.log(this.photos);
-    Storage.set( {key: this.PHOTO_STORAGE, value: JSON.stringify(this.photos) });
-    console.log('NO Errror');
-  }
-
-  public async clearStorage(){
-    await Storage.clear();
-  }
-
   private async savePicture(cameraPhoto) {
     const base64Data = await this.readAsBase64(cameraPhoto);
     const fileName = new Date().getTime() + '.jpeg';
@@ -59,64 +40,6 @@ export class PhotoService implements OnInit{
       filepath: fileName,
       webviewPath: cameraPhoto.webPath
     }
-  }
-
-  public async loadSaved() {
-    const photoList = await Storage.get({ key: this.PHOTO_STORAGE });
-    this.photos = JSON.parse(photoList.value) || [];
-
-    for(let photo of this.photos){
-      const readFile = await Filesystem.readFile({
-        path: photo.filepath,
-        directory: Directory.Data
-      });
-
-      photo.webviewPath = 'data:image/jpeg;base64,${readFile.data}';
-    }
-  }
-
-  async getPhotoByFileNameFromStorage(imgFileName: string){
-    const photoList = await Storage.get({ key: this.PHOTO_STORAGE });
-    this.photos = JSON.parse(photoList.value) || [];
-
-    for(let photo of this.photos){
-      if(imgFileName == photo.filepath){ // Load img
-        return photo;
-      }
-    }
-  }
-
-  getPhotoByFileName(imgFileName: string): Photo{
-    for(let i = 0; i < this.photos.length; i++){
-      console.log(this.photos[i].filepath);
-
-      if(this.photos[i].filepath == imgFileName){
-        return this.photos[i];
-      }
-    }
-
-    return null;
-  }
-
-  private async setWebViewPathAllPhotos(){
-    for(let photo of this.photos){
-      const readFile = await Filesystem.readFile({
-        path: photo.filepath,
-        directory: Directory.Data
-      });
-      photo.webviewPath = `data:image/jpeg;base64,${readFile.data}`;
-    }
-  }
-
-  deletePhotoByFileName(imgFileName: string){
-    for(let i = 0; i < this.photos.length; i++){
-      if(imgFileName == this.photos[i].filepath){
-        this.photos.splice(i, 1);
-        return true;
-      }
-    }
-
-    return false;
   }
 
   private async readAsBase64(cameraPhoto){
