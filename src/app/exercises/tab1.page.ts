@@ -17,7 +17,11 @@ import { Photo, PhotoService } from '../services/photo.service';
 
 export class Tab1Page implements OnInit{
 
-  constructor(private storage: Storage, private actionSheetController: ActionSheetController, private modalController: ModalController, private photoService: PhotoService) {}
+  private titleIsExercise;
+
+  constructor(private storage: Storage, private actionSheetController: ActionSheetController, private modalController: ModalController, private photoService: PhotoService) {
+    this.titleIsExercise = true;
+  }
 
 
   async showActionSheet(){
@@ -112,6 +116,18 @@ export class Tab1Page implements OnInit{
     });
     
     await this.loadCards();
+
+    this.setTabTitle(this.titleIsExercise);
+  }
+
+  private setTabTitle(isExerciseTitle: boolean){
+    const tabTitle: HTMLIonTitleElement = <HTMLIonTitleElement> document.getElementById('tab1_title_id');
+    isExerciseTitle ? tabTitle.textContent = 'Exercises' : tabTitle.textContent = 'Playlists';
+  }
+
+  updateSegment(ev: any) {
+    this.titleIsExercise = !this.titleIsExercise;
+    this.setTabTitle(this.titleIsExercise);
   }
 
 

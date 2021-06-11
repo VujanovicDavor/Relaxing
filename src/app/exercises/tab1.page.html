@@ -1,8 +1,22 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
+    <ion-title class="ion-text-center" id="tab1_title_id">
       Exercises
     </ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment (ionChange)="updateSegment($event)" value="exercises">
+      <ion-segment-button value="exercises">
+        <ion-label>
+          Exercises
+        </ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="playlists">
+        <ion-label>
+          Playlists
+        </ion-label>
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
