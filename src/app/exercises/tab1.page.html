@@ -21,42 +21,15 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding background">
+  <ion-searchbar showCancelButton="focus" (ionChange)="updateSearchResult()" [(ngModel)]="searchbarInput"></ion-searchbar>
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button (click)="showActionSheet()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-<div id="exercises">
+  <div id="exercises_tab1"></div>
 
-</div>
-<ion-card>
-  <ion-card-header>
-    <ion-card-title>Exercise 01</ion-card-title>
-  </ion-card-header>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png">
-  <ion-card-content>
-    This Exercise should familiarize you with the basic of yoga so you can start off your day nice and peacefully. 
-  </ion-card-content>
-</ion-card>
-<ion-card>
-  <ion-card-header>
-    <ion-card-title>Exercise 01</ion-card-title>
-  </ion-card-header>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png">
-  <ion-card-content>
-    This Exercise should familiarize you with the basic of yoga so you can start off your day nice and peacefully. 
-  </ion-card-content>
-</ion-card>
-
-<ion-card>
-  <ion-card-header>
-    <ion-card-title>Exercise 01</ion-card-title>
-  </ion-card-header>
-  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/1200px-Image_created_with_a_mobile_phone.png">
-  <ion-card-content>
-    This Exercise should familiarize you with the basic of yoga so you can start off your day nice and peacefully. 
-  </ion-card-content>
-</ion-card>
+  <div id="playlists_tab1"></div>
 
 </ion-content>
 

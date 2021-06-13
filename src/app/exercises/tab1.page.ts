@@ -7,6 +7,9 @@ import { ExerciseCard } from 'src/models/exercise.card';
 import * as JSONdata from "../default_data/data.json";
 import { ManageExercisesPage } from './manage-exercises/manage-exercises.page';
 import { Photo, PhotoService } from '../services/photo.service';
+import { Playlist } from 'src/models/playlist';
+import { PLAYLIST_KEY } from 'src/models/keys';
+import { identifierModuleUrl } from '@angular/compiler';
 
 
 @Component({
@@ -18,9 +21,14 @@ import { Photo, PhotoService } from '../services/photo.service';
 export class Tab1Page implements OnInit{
 
   private titleIsExercise;
+  private exerciseList: Array<ExerciseCard>;
+  private playlistList: Array<Playlist>;
+  private searchbarInput: string;
 
   constructor(private storage: Storage, private actionSheetController: ActionSheetController, private modalController: ModalController, private photoService: PhotoService) {
     this.titleIsExercise = true;
+    this.exerciseList = new Array();
+    this.playlistList = new Array();
   }
 
 
@@ -59,7 +67,7 @@ export class Tab1Page implements OnInit{
               console.log('Closed Modal (pressed close)')
             } else {
               console.log('HERE NO TOO');   
-              const div: HTMLElement = <HTMLElement> document.getElementById('exercises');
+              const div: HTMLElement = <HTMLElement> document.getElementById('exercises_tab1');
               div.appendChild(await this.createCustomExerciseCard(data.data));
             }
           });
@@ -117,6 +125,12 @@ export class Tab1Page implements OnInit{
     
     await this.loadCards();
 
+    await this.storage.get(PLAYLIST_KEY).then((playlists) => {
+      if(playlists == null || playlists.length == 0){
+        playlists = new Array();
+      }
+    })
+
     this.setTabTitle(this.titleIsExercise);
   }
 
@@ -133,7 +147,8 @@ export class Tab1Page implements OnInit{
 
   private async loadCards(){ // loads the cards
     this.storage.get(EXERCISE_KEY).then(async (exercises: ExerciseCard[]) => {
-      const div: HTMLElement = document.getElementById('exercises');
+      this.exerciseList = exercises;
+      const div: HTMLElement = document.getElementById('exercises_tab1');
       for(let i = 0; i < exercises.length; i++){
         if(exercises[i].img == null || exercises[i].img == ''){
           div.appendChild(this.createCustomExerciseCard(exercises[i]));
@@ -167,7 +182,9 @@ export class Tab1Page implements OnInit{
     ionCard.appendChild(img);
     ionCard.appendChild(ionContent);
 
-    console.log(ionCard);
+    // set id
+    ionCard.id = 'ExerciseCard' + card.id;
+
     return ionCard;
   }
 
@@ -193,7 +210,29 @@ export class Tab1Page implements OnInit{
     ionCard.appendChild(ionHeader);    
     ionCard.appendChild(img);
     ionCard.appendChild(ionContent);
+
+    // set id
+    ionCard.id = 'ExerciseCard' + card.id;
     return ionCard;
+  }
+
+  updateSearchResult(){
+    if(this.titleIsExercise){
+      this.exerciseList.forEach(element => {
+        const card: HTMLIonCardElement = <HTMLIonCardElement> document.getElementById('ExerciseCard' + element.id);
+        let foundTitle: boolean = false;
+        let txt: string = '';
+
+        for(let i = 0; i < card.children.length && !foundTitle; i++){
+          if(card.children[i].tagName == 'ION-CARD-HEADER'){
+            foundTitle = true;
+            txt = card.children[i].children[0].textContent;
+            let presentCard: boolean = txt.toLowerCase().indexOf(this.searchbarInput.toLowerCase()) > -1;
+            card.style.display = presentCard ? 'block' : 'none';
+          }
+        }
+      });
+    }
   }
 }
 
