@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
-import { ActionSheetController } from '@ionic/angular';
+import { ActionSheetController, AlertController } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
 import { ManageplaylistsPage } from './manageplaylists/manageplaylists.page';
 import { ExerciseCard } from 'src/models/exercise.card';
@@ -9,8 +9,7 @@ import { ManageExercisesPage } from './manage-exercises/manage-exercises.page';
 import { Photo, PhotoService } from '../services/photo.service';
 import { Playlist } from 'src/models/playlist';
 import { PLAYLIST_KEY } from 'src/models/keys';
-import { identifierModuleUrl } from '@angular/compiler';
-
+import { CreatePlaylistPage } from './manageplaylists/createPlaylist/createPlaylist';
 
 @Component({
   selector: 'app-tab1',
@@ -24,23 +23,27 @@ export class Tab1Page implements OnInit{
   private exerciseList: Array<ExerciseCard>;
   private playlistList: Array<Playlist>;
   private searchbarInput: string;
+  private exerciseHTMLElements: Array<HTMLElement>;
+  private playlistHTMLElements: Array<HTMLElement>;
 
-  constructor(private storage: Storage, private actionSheetController: ActionSheetController, private modalController: ModalController, private photoService: PhotoService) {
+  constructor(private alertController: AlertController ,private storage: Storage, private actionSheetController: ActionSheetController, private modalController: ModalController, private photoService: PhotoService) {
     this.titleIsExercise = true;
     this.exerciseList = new Array();
     this.playlistList = new Array();
+    this.exerciseHTMLElements = new Array();
+    this.playlistHTMLElements = new Array();
   }
 
 
   async showActionSheet(){
     const actionSheet = await this.actionSheetController.create({
-      header: 'Manage Playlists/Exercises',
+      header: 'Create new Playlist / Exercise',
       buttons: [{
-        text: 'Manage Playlist(s)',
+        text: 'Create new Playlist',
         icon: "play-circle-outline",
         handler: async () => {
           const modal = await this.modalController.create({
-            component: ManageplaylistsPage
+            component: CreatePlaylistPage
           });
 
           modal.onDidDismiss().then((data) => {
@@ -54,7 +57,7 @@ export class Tab1Page implements OnInit{
         }
       },
       {
-        text: 'Manage custom Exercise(s)',
+        text: 'Create new Exercise',
         icon: "accessibility-outline",
         handler: async () => {
           const modal = await this.modalController.create({
@@ -129,6 +132,11 @@ export class Tab1Page implements OnInit{
       if(playlists == null || playlists.length == 0){
         playlists = new Array();
       }
+      
+      for(let i = 0; i < playlists.length; i++){
+        const newPlaylist: HTMLElement = this.loadPlaylist(playlists[i]);
+        this.playlistHTMLElements.push(newPlaylist);
+      }
     })
 
     this.setTabTitle(this.titleIsExercise);
@@ -139,9 +147,43 @@ export class Tab1Page implements OnInit{
     isExerciseTitle ? tabTitle.textContent = 'Exercises' : tabTitle.textContent = 'Playlists';
   }
 
-  updateSegment(ev: any) {
+  private updateSegment(ev: any) {
     this.titleIsExercise = !this.titleIsExercise;
     this.setTabTitle(this.titleIsExercise);
+    this.switchHTMLCards();
+  }
+
+  private switchHTMLCards(){
+
+    if(this.titleIsExercise){
+      this.removeHTMLElements(this.playlistHTMLElements);
+      this.appendHTMLElements(this.exerciseHTMLElements);
+    } else {
+      this.removeHTMLElements(this.exerciseHTMLElements);
+      this.appendHTMLElements(this.playlistHTMLElements);
+    }
+  }
+
+  private removeHTMLElements(elements: HTMLElement[]){
+    for(let i = 0; i < elements.length; i++){
+      elements[i].parentNode.removeChild(elements[i]);
+    }
+  }
+
+  private appendHTMLElements(elements: HTMLElement[]){
+    for(let i = elements.length - 1; i >= 0; i--){
+      document.getElementById('exercises_tab1').appendChild(elements[i]);
+    }
+  }
+
+  async openOptionsAlert(object){
+    if(object instanceof ExerciseCard){
+      object = <ExerciseCard> object;
+    } else if (object instanceof Playlist){
+      object = <Playlist> object;
+    } else {
+      console.log('Different type of object (ExerciseCard, Playlist)');
+    }
   }
 
 
@@ -157,6 +199,69 @@ export class Tab1Page implements OnInit{
         }
       }
     });
+  }
+
+  private loadPlaylist(playlist: Playlist){
+    //const title: HTMLIonTitleElement = <HTMLIonTitleElement> document.getElementById('stored_playlists_title');
+    //title.style.display = 'block';
+
+    if(playlist == null){
+      return;
+    }
+
+    console.log(playlist);
+
+    const card: HTMLIonCardElement = document.createElement('ion-card');
+    const cardHeader: HTMLIonCardHeaderElement = document.createElement('ion-card-header');
+    const cardContent: HTMLIonCardContentElement = document.createElement('ion-card-content');
+    const label: HTMLIonLabelElement = document.createElement('ion-label');
+    const labelItem: HTMLIonItemElement = document.createElement('ion-item');
+    const optionButton: HTMLIonButtonElement = document.createElement('ion-button');
+    const optionIcon: HTMLIonIconElement = document.createElement('ion-icon');
+    const headItem: HTMLIonItemElement = document.createElement('ion-item');
+    const headTitle: HTMLIonLabelElement = document.createElement('ion-label');
+    const hTitle: HTMLElement = document.createElement('h2');
+
+    card.id = CARD_ID + String(playlist.id);
+    console.log(card.id);
+    console.log(playlist.id);
+
+    optionIcon.name = 'ellipsis-vertical-outline';
+    optionButton.appendChild(optionIcon);
+    optionButton.slot = 'end';
+    optionButton.addEventListener('click', (e: Event) => this.openOptionsAlert(playlist));
+
+    hTitle.textContent = String(playlist.name);
+    headTitle.appendChild(hTitle);
+    headItem.appendChild(headTitle);
+    headItem.appendChild(optionButton);
+
+    cardHeader.appendChild(headItem);
+
+    label.textContent = 'Exercises:';
+    labelItem.appendChild(label);
+    cardContent.textContent = String(playlist.description);
+
+    card.appendChild(cardHeader);
+    card.appendChild(cardContent);
+    card.appendChild(labelItem);
+
+    for(let i = 0; i < playlist.cards.length; i++){
+      const item: HTMLIonItemElement = document.createElement('ion-item');
+      const label: HTMLIonLabelElement = document.createElement('ion-label');
+      const h3: HTMLElement = document.createElement('h3');
+      const icon: HTMLIonIconElement = document.createElement('ion-icon');
+      icon.name = 'radio-button-on-outline';
+      icon.slot = "start";
+
+      h3.textContent = playlist.cards[i].title;
+      label.appendChild(h3);
+      item.appendChild(icon);
+      item.appendChild(label);
+
+      card.appendChild(item);
+    }
+    return card;
   }
 
   private createDefaultExerciseCard(card: ExerciseCard): HTMLIonCardElement {
@@ -184,6 +289,7 @@ export class Tab1Page implements OnInit{
 
     // set id
     ionCard.id = 'ExerciseCard' + card.id;
+    this.exerciseHTMLElements.push(ionCard);
 
     return ionCard;
   }
@@ -213,6 +319,7 @@ export class Tab1Page implements OnInit{
 
     // set id
     ionCard.id = 'ExerciseCard' + card.id;
+    this.exerciseHTMLElements.push(ionCard);
     return ionCard;
   }
 
@@ -237,3 +344,4 @@ export class Tab1Page implements OnInit{
 }
 
 const EXERCISE_KEY = 'exercises';
+const CARD_ID = 'playlist_card_';

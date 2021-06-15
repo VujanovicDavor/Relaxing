@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 
-import { PlaylistpopoverPage } from './playlistpopover.page';
+import { CreatePlaylistPage } from './createPlaylist';
 
 describe('PlaylistpopoverPage', () => {
-  let component: PlaylistpopoverPage;
-  let fixture: ComponentFixture<PlaylistpopoverPage>;
+  let component: CreatePlaylistPage;
+  let fixture: ComponentFixture<CreatePlaylistPage>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PlaylistpopoverPage ],
+      declarations: [ CreatePlaylistPage ],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PlaylistpopoverPage);
+    fixture = TestBed.createComponent(CreatePlaylistPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

@@ -10,7 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'playlistpopover',
-    loadChildren: () => import('./playlistpopover/playlistpopover.module').then( m => m.PlaylistpopoverPageModule)
+    loadChildren: () => import('./createPlaylist/playlistpopover.module').then( m => m.PlaylistpopoverPageModule)
   },
   {
     path: 'add-exercises',

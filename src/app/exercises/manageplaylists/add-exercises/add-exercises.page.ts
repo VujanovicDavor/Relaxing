@@ -17,7 +17,7 @@ export class AddExercisesPage implements OnInit {
   input: string;
 
   closeModal(){
-    this.modalController.dismiss(-1);
+    this.modalController.dismiss(null);
   }
 
   async ngOnInit() {

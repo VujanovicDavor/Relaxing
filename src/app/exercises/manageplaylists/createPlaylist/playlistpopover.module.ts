@@ -6,7 +6,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { PlaylistpopoverPageRoutingModule } from './playlistpopover-routing.module';
 
-import { PlaylistpopoverPage } from './playlistpopover.page';
+import { CreatePlaylistPage } from './createPlaylist';
 
 @NgModule({
   imports: [
@@ -15,6 +15,6 @@ import { PlaylistpopoverPage } from './playlistpopover.page';
     IonicModule,
     PlaylistpopoverPageRoutingModule
   ],
-  declarations: [PlaylistpopoverPage]
+  declarations: [CreatePlaylistPage]
 })
 export class PlaylistpopoverPageModule {}

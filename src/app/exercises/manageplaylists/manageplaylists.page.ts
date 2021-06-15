@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { Playlist } from 'src/models/playlist';
 import { PopoverController, AlertController } from '@ionic/angular';
-import { PlaylistpopoverPage } from './playlistpopover/playlistpopover.page';
+import { CreatePlaylistPage } from './createPlaylist/createPlaylist';
 import { PLAYLIST_KEY } from 'src/models/keys';
 import { STRING_TYPE } from '@angular/compiler';
 
@@ -42,7 +42,7 @@ export class ManageplaylistsPage implements OnInit {
     }
 
     const popover = await this.popoverController.create({
-      component: PlaylistpopoverPage,
+      component: CreatePlaylistPage,
       componentProps: {'playlist': playlist},
       translucent: true,
     });
@@ -186,4 +186,4 @@ export class ManageplaylistsPage implements OnInit {
 }
 
 const PLAYLIST_STORAGE_KEY = 'playlists';
-const CARD_ID = 'playlist_card_'
+const CARD_ID = 'playlist_card_';
