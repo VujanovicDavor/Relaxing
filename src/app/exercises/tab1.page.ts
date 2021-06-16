@@ -50,9 +50,32 @@ export class Tab1Page implements OnInit{
             if(data.data == null){
               console.log('Closed the modal (pressed close)');
             } else {
-              console.log(data.data);
+              return data.data;
             }
-          })
+          }).then(async (playlist: Playlist) => {
+            this.storage.get(PLAYLIST_KEY).then(async (playlists: Playlist[]) => {
+              if(playlist.id == null || playlist.id == ''){
+                playlist.id = String(playlists.length);
+                playlists.push(playlist);
+                await this.storage.set(PLAYLIST_KEY, playlists);
+              } else {
+                let foundPlaylist: boolean = false;
+
+                for (let i = 0; i < playlists.length && !foundPlaylist; i++){
+                  if(playlists[i].id == playlist.id) {
+                    foundPlaylist = true;
+                    playlists[i] = playlist;
+                  }
+                }
+
+                if(foundPlaylist){
+                  await this.storage.set(PLAYLIST_KEY, playlists);
+                } else {
+                  console.log('No playlist with such ID found => not able to store');
+                }
+              }
+            });
+          });
           return await modal.present();
         }
       },

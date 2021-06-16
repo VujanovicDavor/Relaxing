@@ -45,7 +45,7 @@ export class AddExercisesPage implements OnInit {
       const icon: HTMLIonIconElement = document.createElement('ion-icon');
       icon.name = 'list-outline';
       button.slot = 'end';
-      button.addEventListener('click', (e: Event) => this.returnExercise(Number(element.id)));
+      button.addEventListener('click', (e: Event) => this.returnExercise(element));
       button.appendChild(icon);
       item.appendChild(button);
       list.appendChild(item);
@@ -61,8 +61,8 @@ export class AddExercisesPage implements OnInit {
     });
   }
 
-  returnExercise(id: Number){
-    this.modalController.dismiss(id);
+  returnExercise(exercise: ExerciseCard){
+    this.modalController.dismiss(exercise);
   }
 
   private toListItem(card: ExerciseCard): HTMLIonItemElement{
