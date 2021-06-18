@@ -34,6 +34,14 @@ export class Tab1Page implements OnInit{
     this.playlistHTMLElements = new Array();
   }
 
+  async editPlaylist(playlist: Playlist){
+
+  }
+
+  async editExercise(exercise: ExerciseCard){
+
+  }
+
 
   async showActionSheet(){
     const actionSheet = await this.actionSheetController.create({
@@ -54,9 +62,16 @@ export class Tab1Page implements OnInit{
             }
           }).then(async (playlist: Playlist) => {
             this.storage.get(PLAYLIST_KEY).then(async (playlists: Playlist[]) => {
+
               if(playlist.id == null || playlist.id == ''){
                 playlist.id = String(playlists.length);
                 playlists.push(playlist);
+                this.playlistHTMLElements.push(this.loadPlaylist(playlist));
+
+                if(!this.titleIsExercise){
+                  this.appendHTMLElement(this.loadPlaylist(playlist)); // append to DOM if current State is playlist switch
+                }
+
                 await this.storage.set(PLAYLIST_KEY, playlists);
               } else {
                 let foundPlaylist: boolean = false;
@@ -65,6 +80,12 @@ export class Tab1Page implements OnInit{
                   if(playlists[i].id == playlist.id) {
                     foundPlaylist = true;
                     playlists[i] = playlist;
+
+                    if(!this.titleIsExercise){
+                      this.removeHTMLElement(this.playlistHTMLElements[i]);
+                      this.playlistHTMLElements[i] = this.loadPlaylist(playlist);
+                      this.appendHTMLElement(this.playlistHTMLElements[i]);
+                    }
                   }
                 }
 
@@ -151,9 +172,10 @@ export class Tab1Page implements OnInit{
     
     await this.loadCards();
 
-    await this.storage.get(PLAYLIST_KEY).then((playlists) => {
+    await this.storage.get(PLAYLIST_KEY).then(async (playlists) => {
       if(playlists == null || playlists.length == 0){
         playlists = new Array();
+        this.storage.set(PLAYLIST_KEY, playlists);
       }
       
       for(let i = 0; i < playlists.length; i++){
@@ -179,34 +201,67 @@ export class Tab1Page implements OnInit{
   private switchHTMLCards(){
 
     if(this.titleIsExercise){
-      this.removeHTMLElements(this.playlistHTMLElements);
-      this.appendHTMLElements(this.exerciseHTMLElements);
+      this.removeHTMLElementsSwitch(this.playlistHTMLElements);
+      this.appendHTMLElementsSwitch(this.exerciseHTMLElements);
     } else {
-      this.removeHTMLElements(this.exerciseHTMLElements);
-      this.appendHTMLElements(this.playlistHTMLElements);
+      this.removeHTMLElementsSwitch(this.exerciseHTMLElements);
+      this.appendHTMLElementsSwitch(this.playlistHTMLElements);
     }
   }
 
-  private removeHTMLElements(elements: HTMLElement[]){
+  private removeHTMLElementsSwitch(elements: HTMLElement[]){
     for(let i = 0; i < elements.length; i++){
       elements[i].parentNode.removeChild(elements[i]);
     }
   }
 
-  private appendHTMLElements(elements: HTMLElement[]){
+  private appendHTMLElementsSwitch(elements: HTMLElement[]){
     for(let i = elements.length - 1; i >= 0; i--){
       document.getElementById('exercises_tab1').appendChild(elements[i]);
     }
   }
 
+  private appendHTMLElement(element: HTMLElement){
+    document.getElementById('exercises_tab1').appendChild(element);
+  }
+
+  private removeHTMLElement(element: HTMLElement){
+    document.getElementById('exercises_tab1').removeChild(element);
+  } 
+
   async openOptionsAlert(object){
-    if(object instanceof ExerciseCard){
-      object = <ExerciseCard> object;
-    } else if (object instanceof Playlist){
-      object = <Playlist> object;
-    } else {
-      console.log('Different type of object (ExerciseCard, Playlist)');
+    let optionSubMessage: string = '';
+    let exercise: ExerciseCard = null;
+    let playlist: Playlist = null;
+
+    try{
+      playlist = object;
+    } catch {
+      exercise = object;
     }
+
+    const alert = await this.alertController.create({
+      header: 'Select an option',
+      message: 'Do you want to delete or edit this ' + optionSubMessage,
+      buttons: [{
+        text: 'Edit',
+        handler: () => {
+          
+        }
+      },
+      {
+        text: 'Delete',
+        handler: () => {
+          if(playlist == null){
+
+          } else {
+            this.deletePlaylist(playlist);
+          }
+        }
+      }]      
+    });
+
+    await alert.present();
   }
 
 
@@ -249,7 +304,7 @@ export class Tab1Page implements OnInit{
     console.log(card.id);
     console.log(playlist.id);
 
-    optionIcon.name = 'ellipsis-vertical-outline';
+    optionIcon.name = 'ellipsis-vertical';
     optionButton.appendChild(optionIcon);
     optionButton.slot = 'end';
     optionButton.addEventListener('click', (e: Event) => this.openOptionsAlert(playlist));
@@ -317,6 +372,26 @@ export class Tab1Page implements OnInit{
     return ionCard;
   }
 
+  async deletePlaylist(playlist: Playlist){
+    this.storage.get(PLAYLIST_KEY).then(async (playlists: Playlist[]) => {
+      let foundPlaylist: boolean = false;
+
+      for(let i = 0; i < playlists.length && !foundPlaylist; i++){
+        if(playlists[i].id == playlist.id){
+          foundPlaylist = true;
+
+          playlists.splice(i, 1);
+          this.removeHTMLElement(this.playlistHTMLElements[i]);
+          this.playlistHTMLElements.splice(i ,1);
+        }
+      }
+
+      await this.storage.set(PLAYLIST_KEY, playlists);
+    });
+  }
+
+
+
   private createCustomExerciseCard(card: ExerciseCard): HTMLIonCardElement {
     if(card == null){
       return null;
@@ -361,6 +436,10 @@ export class Tab1Page implements OnInit{
             card.style.display = presentCard ? 'block' : 'none';
           }
         }
+      });
+    } else {
+      this.playlistHTMLElements.forEach(element => {
+        
       });
     }
   }
