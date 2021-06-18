@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="closeModal()">Close</ion-button>
+    </ion-buttons>
+    <ion-title>Manage Exercise</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-label>
+        <h1 id="exercise_label_id"></h1>
+      </ion-label>
+    </ion-card-header>
+    <div id="exercise_card_img"></div>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-button id="add_photo_button" (click)="addToPhotoGallery()">Add Image</ion-button>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Name</ion-label>
+          <ion-input [(ngModel)]="inputName" (ionChange)="updateStoreButton()" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Description</ion-label>
+          <ion-textarea [(ngModel)]="inputDescription" (ionChange)="updateStoreButton()" type="text"></ion-textarea>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Duration</ion-label>
+          <ion-input [(ngModel)]="inputMinutes" (ionChange)="updateStoreButton()" placeholder="Minutes..." type="number"></ion-input>
+          <ion-input [(ngModel)]="inputSeconds" (ionChange)="updateStoreButton()" placeholder="Seconds..." type="number"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-button (click)="storeExericse()" id="exercise_store_button">Store</ion-button>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,57 +1,40 @@
+import { Photo, PhotoService } from '../app/services/photo.service';
+
 export class ExerciseCard{
-    title: string;
-    content: string;
-    img: string;
-    id: string;
-    type: string;
+    public title: string;
+    public content: string;
+    public img: string;
+    public id: string;
+    public type: string;
+    public webViewPath: string;
+    public minutes: number;
+    public seconds: number;
+    private primaryType: string;
+    private secondaryType: string;
 
     constructor(){
         this.content = '';
         this.img = '';
         this.title = '';
         this.type = '';
+        this.webViewPath = '';
+        this.minutes = 0;
+        this.seconds = 0;
     }
 
-    createCard(id: string ,title: string, content: string, img: string, type: string){
-        this.content = content;
-        this.img = img;
-        this.title = title;
-        this.id = id;
-        this.type = type;
+    public getPrimaryType(): string {
+        return this.primaryType;
     }
 
-    static toCard(card: ExerciseCard): HTMLElement{
-        if(card == null){
-            return null;
-        }
-
-        // init
-        const ionCard: HTMLElement = document.createElement('ion-card');
-        const ionHeader: HTMLElement = document.createElement('ion-card-header');
-        const ionTitle: HTMLElement = document.createElement('ion-title');
-        const ionContent: HTMLElement = document.createElement('ion-card-content');
-        const img: HTMLImageElement = document.createElement('img');
-
-        // declare
-        ionTitle.textContent = card.title;
-        ionContent.textContent = card.content;
-        img.src = card.img;
-
-        // append
-        ionHeader.appendChild(ionTitle);
-        ionCard.appendChild(ionHeader);
-        ionCard.appendChild(img);
-        ionCard.appendChild(ionContent);
-
-        return ionCard;
+    public setPrimaryType(type: string): void {
+        if(type == ''){} // implement types (create different types)
     }
 
-    static toListItem(card: ExerciseCard): HTMLIonItemElement{
-        // init
-        const item: HTMLIonItemElement = document.createElement('ion-item');
-        
-        // declare
-        item.textContent = card.title;
-        return item;
+    public getSecondaryType(): string {
+        return this.secondaryType;
+    }
+
+    public setSecondaryType(type: string){
+        if(type == ''){} //implement types
     }
 }

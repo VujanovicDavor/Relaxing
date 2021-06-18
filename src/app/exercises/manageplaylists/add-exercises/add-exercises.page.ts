@@ -17,7 +17,7 @@ export class AddExercisesPage implements OnInit {
   input: string;
 
   closeModal(){
-    this.modalController.dismiss(-1);
+    this.modalController.dismiss(null);
   }
 
   async ngOnInit() {
@@ -39,13 +39,13 @@ export class AddExercisesPage implements OnInit {
     this.items = new Array();
 
     exercises.forEach(element => { // append items from storage to list
-      const item: HTMLElement = ExerciseCard.toListItem(element);
+      const item: HTMLElement = this.toListItem(element);
       this.items.push(item);
       const button: HTMLIonButtonElement = document.createElement('ion-button');
       const icon: HTMLIonIconElement = document.createElement('ion-icon');
       icon.name = 'list-outline';
       button.slot = 'end';
-      button.addEventListener('click', (e: Event) => this.returnExercise(Number(element.id)));
+      button.addEventListener('click', (e: Event) => this.returnExercise(element));
       button.appendChild(icon);
       item.appendChild(button);
       list.appendChild(item);
@@ -61,8 +61,18 @@ export class AddExercisesPage implements OnInit {
     });
   }
 
-  returnExercise(id: Number){
-    this.modalController.dismiss(id);
+  returnExercise(exercise: ExerciseCard){
+    this.modalController.dismiss(exercise);
+  }
+
+  private toListItem(card: ExerciseCard): HTMLIonItemElement{
+    if(card == null){
+      return null;
+    }
+
+    const item: HTMLIonItemElement = document.createElement('ion-item');
+    item.textContent = card.title;
+    return item;
   }
 }
 

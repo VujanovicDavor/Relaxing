@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title id="title"></ion-title>
+    <ion-buttons slot="end"><ion-button color="primary" (click)="closeModel()">CANCEL</ion-button></ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-title>
+        Create new Playlist
+      </ion-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-label position="floating">Name</ion-label>
+          <ion-input [(ngModel)]="_inputPlaylistName" (ionChange)="checkStoreButton()" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Description</ion-label>
+          <ion-textarea [(ngModel)]="_inputPlaylistDescription" (ionChange)="checkStoreButton()" type="text"></ion-textarea>
+        </ion-item>
+        <ion-item>
+          <ion-label position="fixed">Add Exercise</ion-label>
+          <ion-button (click)="openAddExerciseModal()" item-right><ion-icon name="add"></ion-icon></ion-button>
+        </ion-item>
+        <ion-item>
+          <ion-list id="playlistExerciseItems"></ion-list>
+        </ion-item>
+        <ion-button (click)="storePlaylist()" id="storePlaylistButton">Store</ion-button>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -60,10 +60,6 @@ export class HomePagePage implements OnInit {
     });
   }
 
-  presentCard(card: ExerciseCard){
-    const cardDiv: HTMLElement = document.getElementById('moodCards');
-    cardDiv.appendChild(ExerciseCard.toCard(card));
-  }
 
   async addMoodObject(toInsert: Mood){
     this.storage.get(MOOD_KEY).then((moodArr: Mood[]) => {
