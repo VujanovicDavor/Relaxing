@@ -42,7 +42,7 @@ export class HomePagePage implements OnInit {
 
   calculateScore(moodObject: Mood){
     const score = moodObject.getMoodScore();
-
+    
     if(score > 0){
       this.loadCards(score);
     } else {
