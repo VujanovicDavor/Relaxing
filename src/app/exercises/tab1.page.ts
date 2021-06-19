@@ -35,7 +35,42 @@ export class Tab1Page implements OnInit{
   }
 
   async editPlaylist(playlist: Playlist){
+    const modal = await this.modalController.create({
+      component: CreatePlaylistPage,
+      componentProps: {'playlist': playlist}
+    });
 
+    modal.onDidDismiss().then((data) => {
+      return data.data;
+    }).then(async (data: Playlist) => {
+      if(data.id != null && data.id != ''){
+        this.storage.get(PLAYLIST_KEY).then((storedPlaylists: Playlist[]) => {
+          let foundPlaylist: boolean = false;
+
+          for( let i = 0 ; i < storedPlaylists.length && !foundPlaylist; i++) {
+            if(storedPlaylists[i].id == data.id){
+              foundPlaylist = true;
+              storedPlaylists[i] = data;
+            }
+          }
+
+          foundPlaylist = false;
+
+          for( let i = 0; i < storedPlaylists.length && !foundPlaylist; i++){
+            if(CARD_ID +  data.id == this.playlistHTMLElements[i].id) {
+              console.log('New playlist')
+              this.removeHTMLElement(this.playlistHTMLElements[i]);
+              this.playlistHTMLElements[i] = this.loadPlaylist(data);
+              this.appendHTMLElement(this.playlistHTMLElements[i]);
+            }
+          }
+
+          this.storage.set(PLAYLIST_KEY, storedPlaylists);
+        });
+      }
+    })
+
+    return await modal.present();
   }
 
   async editExercise(exercise: ExerciseCard){
@@ -63,6 +98,10 @@ export class Tab1Page implements OnInit{
           }).then(async (playlist: Playlist) => {
             this.storage.get(PLAYLIST_KEY).then(async (playlists: Playlist[]) => {
 
+              if(playlist == null){
+                return;
+              }
+
               if(playlist.id == null || playlist.id == ''){
                 playlist.id = String(playlists.length);
                 playlists.push(playlist);
@@ -73,27 +112,6 @@ export class Tab1Page implements OnInit{
                 }
 
                 await this.storage.set(PLAYLIST_KEY, playlists);
-              } else {
-                let foundPlaylist: boolean = false;
-
-                for (let i = 0; i < playlists.length && !foundPlaylist; i++){
-                  if(playlists[i].id == playlist.id) {
-                    foundPlaylist = true;
-                    playlists[i] = playlist;
-
-                    if(!this.titleIsExercise){
-                      this.removeHTMLElement(this.playlistHTMLElements[i]);
-                      this.playlistHTMLElements[i] = this.loadPlaylist(playlist);
-                      this.appendHTMLElement(this.playlistHTMLElements[i]);
-                    }
-                  }
-                }
-
-                if(foundPlaylist){
-                  await this.storage.set(PLAYLIST_KEY, playlists);
-                } else {
-                  console.log('No playlist with such ID found => not able to store');
-                }
               }
             });
           });
@@ -229,24 +247,27 @@ export class Tab1Page implements OnInit{
     document.getElementById('exercises_tab1').removeChild(element);
   } 
 
-  async openOptionsAlert(object){
-    let optionSubMessage: string = '';
+  async openOptionsAlert(object, typeOfObject: string){
     let exercise: ExerciseCard = null;
     let playlist: Playlist = null;
 
-    try{
-      playlist = object;
-    } catch {
+    if(typeOfObject == 'Exercise'){
       exercise = object;
+    } else if(typeOfObject == 'Playlist'){
+      playlist = object;
     }
 
     const alert = await this.alertController.create({
       header: 'Select an option',
-      message: 'Do you want to delete or edit this ' + optionSubMessage,
+      message: 'Do you want to delete or edit this ' + typeOfObject,
       buttons: [{
         text: 'Edit',
         handler: () => {
-          
+          if(playlist == null){
+
+          } else {
+            this.editPlaylist(playlist);
+          }
         }
       },
       {
@@ -300,14 +321,14 @@ export class Tab1Page implements OnInit{
     const headTitle: HTMLIonLabelElement = document.createElement('ion-label');
     const hTitle: HTMLElement = document.createElement('h2');
 
-    card.id = CARD_ID + String(playlist.id);
+    card.id = CARD_ID + playlist.id;
     console.log(card.id);
     console.log(playlist.id);
 
     optionIcon.name = 'ellipsis-vertical';
     optionButton.appendChild(optionIcon);
     optionButton.slot = 'end';
-    optionButton.addEventListener('click', (e: Event) => this.openOptionsAlert(playlist));
+    optionButton.addEventListener('click', (e: Event) => this.openOptionsAlert(playlist, 'Playlist'));
 
     hTitle.textContent = String(playlist.name);
     headTitle.appendChild(hTitle);
@@ -400,17 +421,28 @@ export class Tab1Page implements OnInit{
     // init
     const ionCard: HTMLIonCardElement = document.createElement('ion-card');
     const ionHeader: HTMLIonCardHeaderElement = document.createElement('ion-card-header');
-    const ionTitle: HTMLIonTitleElement = document.createElement('ion-title');
     const ionContent: HTMLIonCardContentElement = document.createElement('ion-card-content');
     const img: HTMLImageElement = document.createElement('img');
+    const headItem: HTMLIonItemElement = document.createElement('ion-item');
+    const headLabel: HTMLIonLabelElement = document.createElement('ion-label');
+    const optButton: HTMLIonButtonElement = document.createElement('ion-button');
+    const optIcon: HTMLIonIconElement = document.createElement('ion-icon');
+    const h2: HTMLElement = document.createElement('h2');
 
     // declare
-    ionTitle.textContent = card.title;
+    h2.textContent = card.title;
+    optIcon.name = 'ellipsis-vertical';
+    optButton.slot = 'end';
+    optButton.addEventListener('click', (ev: Event) => this.openOptionsAlert(card, 'Exercise'));
     ionContent.textContent = card.content;
     img.src = card.webViewPath;
 
     // append
-    ionHeader.appendChild(ionTitle);
+    headLabel.appendChild(h2);
+    headItem.appendChild(headLabel);
+    optButton.appendChild(optIcon);
+    headItem.appendChild(optButton);
+    ionHeader.appendChild(headItem);
     ionCard.appendChild(ionHeader);    
     ionCard.appendChild(img);
     ionCard.appendChild(ionContent);
@@ -439,7 +471,17 @@ export class Tab1Page implements OnInit{
       });
     } else {
       this.playlistHTMLElements.forEach(element => {
-        
+        let txt: string = '';
+        let foundTitle: boolean = false;
+
+        for(let i = 0; i < element.children.length && !foundTitle; i++){
+          if(element.children[i].tagName == 'ION-CARD-HEADER'){
+            txt = element.children[i].children[0].children[0].children[0].textContent;
+            let presentCard: boolean = txt.toLowerCase().indexOf(this.searchbarInput.toLowerCase()) > -1;
+            element.style.display = presentCard ? 'block' : 'none';
+            foundTitle = true;
+          }
+        }
       });
     }
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, AlertController } from '@ionic/angular';
+import { ModalController, AlertController, NavParams } from '@ionic/angular';
 import { ExerciseCard } from 'src/models/exercise.card';
 import { Playlist } from 'src/models/playlist';
 import { AddExercisesPage } from '../add-exercises/add-exercises.page';
@@ -14,11 +14,22 @@ export class CreatePlaylistPage implements OnInit {
   _inputPlaylistName: string;
   _inputPlaylistDescription: string;
   _listOfExercises: Array<ExerciseCard>;
+  _id: string;
   _storeButtonDisabled: boolean;
 
-  constructor(private modalController: ModalController, private alertController: AlertController){
+  constructor(private modalController: ModalController, private alertController: AlertController, private navParams: NavParams){
     this._listOfExercises = new Array();
     this._storeButtonDisabled = true;
+    const playlist: Playlist = navParams.get('playlist');
+    
+    if(playlist != null){
+      this._inputPlaylistName = playlist.name;
+      this._inputPlaylistDescription = playlist.description;
+      this._listOfExercises = playlist.cards;
+      this._id = playlist.id;
+    } else {
+      this._id = '';
+    }
   }
 
   async openAddExerciseModal(){
@@ -112,6 +123,7 @@ export class CreatePlaylistPage implements OnInit {
     newPlaylist.name = this._inputPlaylistName;
     newPlaylist.description = this._inputPlaylistDescription;
     newPlaylist.cards = this._listOfExercises;
+    newPlaylist.id = this._id;
     this.modalController.dismiss(newPlaylist);
   }
 
@@ -125,12 +137,16 @@ export class CreatePlaylistPage implements OnInit {
     }
   }
 
-  closeModel() {
+  closeModal() {
     this.modalController.dismiss(null);
   }
 
   async ngOnInit(){
     this.checkStoreButton();
+    
+    for(let i = 0; i < this._listOfExercises.length; i++){
+      this.appendExerciseToHTML(this._listOfExercises[i]);
+    }
   }
 }
 const EXERCISE_SLIDE_ITEM_ID = 'slide_item_';

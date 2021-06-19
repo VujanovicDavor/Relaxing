@@ -18,6 +18,7 @@ export class ManageExercisesPage implements OnInit {
   inputDescription: string;
   inputMinutes: number;
   inputSeconds: number;
+  _webViewPath: string;
 
   exerciseCard: ExerciseCard;
 
@@ -27,6 +28,12 @@ export class ManageExercisesPage implements OnInit {
 
     if(this.exerciseCard == null){
       this.exerciseCard = new ExerciseCard();
+    } else {
+      this.inputName = this.exerciseCard.title;
+      this.inputDescription = this.exerciseCard.content;
+      this.inputMinutes = this.exerciseCard.minutes;
+      this.inputSeconds = this.exerciseCard.seconds;
+      this._webViewPath = this.exerciseCard.webViewPath;
     }
 
     if(this.exerciseLabel == null || this.exerciseLabel.length == 0){
@@ -121,12 +128,23 @@ export class ManageExercisesPage implements OnInit {
     this.modalController.dismiss(this.exerciseCard);
   }
 
+  setWebViewPath(){
+    if(this._webViewPath == null || this._webViewPath == ''){
+      return;
+    } else {
+      const div = document.getElementById('exercise_card_img');
+      const img: HTMLImageElement = document.createElement('img');
+      img.src = this._webViewPath;
+    }
+  }
+
 
 
   async ngOnInit() {
     this.storage.create();
     this.changeExerciseLabel(this.exerciseLabel);
     this.updateStoreButton();
+    
   }
 
 }
