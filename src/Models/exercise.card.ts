@@ -9,6 +9,7 @@ export class ExerciseCard{
     public webViewPath: string;
     public minutes: number;
     public seconds: number;
+    public photo: Photo;
     private primaryType: string;
     private secondaryType: string;
 

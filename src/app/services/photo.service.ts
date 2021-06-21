@@ -10,7 +10,7 @@ import * as jsonData from '../default_data/data.json';
 })
 export class PhotoService implements OnInit{
 
-  public async getPhoto(): Promise<string>{
+  public async getPhoto(): Promise<Photo>{
     try {
       const capturedPhoto = await Camera.getPhoto({
         resultType: CameraResultType.Uri,
@@ -20,9 +20,8 @@ export class PhotoService implements OnInit{
         console.log('closed camera');
       });
       const savedImageFile = await this.savePicture(capturedPhoto);
-      this.photos.unshift(savedImageFile);
-      console.log(this.photos);
-      return Promise.resolve(savedImageFile.webviewPath);
+      this.photo = savedImageFile;
+      return Promise.resolve(this.photo);
     } catch (error) {
       return Promise.reject();
     }
@@ -64,7 +63,7 @@ export class PhotoService implements OnInit{
     
   }
 
-  public photos: Photo[] = [];
+  private photo: Photo;
   private PHOTO_STORAGE: string = "photos";
 
   constructor() { }

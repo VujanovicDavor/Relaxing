@@ -74,7 +74,18 @@ export class Tab1Page implements OnInit{
   }
 
   async editExercise(exercise: ExerciseCard){
+    const modal = await this.modalController.create({
+      component: ManageExercisesPage,
+      componentProps: {'Exercise': exercise, 'exerciseTitle': 'Edit ' + exercise.title}
+    });
 
+    modal.onDidDismiss().then((data) => {
+      return data.data;
+    }).then((exercise: ExerciseCard) => {
+
+    });
+
+    return await modal.present();
   }
 
 
@@ -134,6 +145,7 @@ export class Tab1Page implements OnInit{
               console.log('HERE NO TOO');   
               const div: HTMLElement = <HTMLElement> document.getElementById('exercises_tab1');
               div.appendChild(await this.createCustomExerciseCard(data.data));
+              this.exerciseList.push(data.data);
             }
           });
 
@@ -234,7 +246,7 @@ export class Tab1Page implements OnInit{
   }
 
   private appendHTMLElementsSwitch(elements: HTMLElement[]){
-    for(let i = elements.length - 1; i >= 0; i--){
+    for(let i = 0; i < elements.length; i++){
       document.getElementById('exercises_tab1').appendChild(elements[i]);
     }
   }
@@ -264,7 +276,7 @@ export class Tab1Page implements OnInit{
         text: 'Edit',
         handler: () => {
           if(playlist == null){
-
+            this.editExercise(exercise);
           } else {
             this.editPlaylist(playlist);
           }
@@ -435,7 +447,7 @@ export class Tab1Page implements OnInit{
     optButton.slot = 'end';
     optButton.addEventListener('click', (ev: Event) => this.openOptionsAlert(card, 'Exercise'));
     ionContent.textContent = card.content;
-    img.src = card.webViewPath;
+    img.src = card.photo.webviewPath;
 
     // append
     headLabel.appendChild(h2);

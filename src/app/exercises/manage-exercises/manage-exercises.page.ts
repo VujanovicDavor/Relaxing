@@ -4,6 +4,7 @@ import { PhotoService, Photo } from '../../services/photo.service';
 import { Storage } from '@ionic/storage-angular';
 import { ExerciseCard } from 'src/models/exercise.card';
 import { EXERCISE_KEY } from 'src/models/keys';
+import { Directory, Filesystem } from '@capacitor/filesystem';
 
 @Component({
   selector: 'app-manage-exercises',
@@ -24,7 +25,7 @@ export class ManageExercisesPage implements OnInit {
 
   constructor(private modalController: ModalController, private navParams: NavParams, public photoService: PhotoService, private storage: Storage) { 
     this.exerciseLabel = navParams.get('exerciseTitle');
-    this.exerciseCard = navParams.get('exerciseCard');
+    this.exerciseCard = navParams.get('Exercise');
 
     if(this.exerciseCard == null){
       this.exerciseCard = new ExerciseCard();
@@ -33,7 +34,7 @@ export class ManageExercisesPage implements OnInit {
       this.inputDescription = this.exerciseCard.content;
       this.inputMinutes = this.exerciseCard.minutes;
       this.inputSeconds = this.exerciseCard.seconds;
-      this._webViewPath = this.exerciseCard.webViewPath;
+      this._webViewPath = this.exerciseCard.photo.webviewPath;
     }
 
     if(this.exerciseLabel == null || this.exerciseLabel.length == 0){
@@ -43,12 +44,12 @@ export class ManageExercisesPage implements OnInit {
   }
 
   async addToPhotoGallery(){
-    this.photoService.getPhoto().then((webviewPath) => {
-      if(webviewPath == null || webviewPath.length == 0){
-        console.log('No photo received');
+    this.photoService.getPhoto().then(async (photo) => {
+      if (photo == null){
+        return;
       }
-      this.exerciseCard.webViewPath = webviewPath;
-      console.log(this.exerciseCard.webViewPath);
+      this.exerciseCard.photo = photo;
+      await this.getPhotoFromStorage(photo);
       this.displayImageToCard();
       
     }).catch(() => {
@@ -56,10 +57,25 @@ export class ManageExercisesPage implements OnInit {
     });
   }
 
+  async getPhotoFromStorage(photo: Photo) {
+    const readFile = await Filesystem.readFile({
+      path: photo.filepath,
+      directory: Directory.Data
+    });
+    this.exerciseCard.photo.webviewPath = 'data:image/jpeg;base64,' + readFile.data;
+  }
+
   private async displayImageToCard(){
     const div: HTMLElement = document.getElementById('exercise_card_img');
+
+    if(div.children.length != 0){
+      for ( let i = 0 ; i < div.children.length; i++){
+        div.removeChild(div.children[i]);
+      }
+    }
+
     const img: HTMLImageElement = <HTMLImageElement> document.createElement('img');
-    img.src = this.exerciseCard.webViewPath;
+    img.src = this.exerciseCard.photo.webviewPath;
 
     div.appendChild(img);
 
@@ -80,7 +96,7 @@ export class ManageExercisesPage implements OnInit {
     const button: HTMLIonButtonElement = <HTMLIonButtonElement> document.getElementById('exercise_store_button');
     
     
-    if(this.inputDescription == null || this.inputName == null || this.inputMinutes == null && this.inputSeconds == null || this.exerciseCard.webViewPath == ''){
+    if(this.inputDescription == null || this.inputName == null || this.inputMinutes == null && this.inputSeconds == null || this.exerciseCard.photo.webviewPath == ''){
       button.disabled = true;
     } else {
       let sum: number = 0;
@@ -135,6 +151,10 @@ export class ManageExercisesPage implements OnInit {
       const div = document.getElementById('exercise_card_img');
       const img: HTMLImageElement = document.createElement('img');
       img.src = this._webViewPath;
+      div.appendChild(img);
+
+      const button: HTMLIonButtonElement = <HTMLIonButtonElement> document.getElementById('add_photo_button');
+      button.textContent = 'Change Image';
     }
   }
 
@@ -144,7 +164,7 @@ export class ManageExercisesPage implements OnInit {
     this.storage.create();
     this.changeExerciseLabel(this.exerciseLabel);
     this.updateStoreButton();
-    
+    this.setWebViewPath();
   }
 
 }
