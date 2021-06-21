@@ -13,6 +13,27 @@
             "description": "Inhale slowly through your nose. Then contract all your muscles as much as you can. Hold your breath for 10 - 20 seconds. Afterwards exhale and relax your body.",
             "type": "Breathing Exercise",
             "imageAddress": "https://www.myself.de/Undefined/image-thumb__6524__gallery-horizontal/entspannungs%C3%BCbungen_2.jpg"
+        },
+        {
+            "id": 3,
+            "title": "Muscle Relaxation",
+            "description": "With muscle relaxation, the whole body is not tensed at once, but individual muscle groups are first tensed one after the other and then relaxed again in a targeted manner. You start with your feet and work your way through your whole body to your head. The tension phase does not last longer than five to ten seconds.",
+            "type": "Stretching Exercise",
+            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6533__gallery-horizontal/Progressive-Muskelrelaxation.jpg"
+        },
+        {
+            "id": 4,
+            "title": "Stretching",
+            "description": "Stand upright, stretch your arms up and pull them towards the sky. The back is straight and straightened as well, as are the calves and feet.",
+            "type": "Stretching Exercise",
+            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6526__gallery-horizontal/k%C3%B6rper-strecken.jpg"
+        },
+        {
+            "id": 5,
+            "title": "Meditation",
+            "description": "Find a quiet, comfortable place, lie on your back or sit cross-legged and close your eyes. Inhale slowly through your nose and exhale through your mouth. Basically, the success of meditating lies in doing nothing.",
+            "type": "Breathing Exercise",
+            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6529__gallery-horizontal/meditation_3.jpg"
         }
     ]
 }
