@@ -10,6 +10,7 @@ import { Photo, PhotoService } from '../services/photo.service';
 import { Playlist } from 'src/models/playlist';
 import { PLAYLIST_KEY } from 'src/models/keys';
 import { CreatePlaylistPage } from './manageplaylists/createPlaylist/createPlaylist';
+import { PlayModalPage } from '../play-modal/play-modal.page';
 
 @Component({
   selector: 'app-tab1',
@@ -297,6 +298,19 @@ export class Tab1Page implements OnInit{
     await alert.present();
   }
 
+  async openPlayModal(playlist: Playlist, card: ExerciseCard) {
+    const modal = await this.modalController.create({
+      component: PlayModalPage,
+      componentProps: { 'exercise': card, 'playlist': playlist }
+    });
+
+    modal.onDidDismiss().then(()  => {
+
+    });
+
+    return await modal.present();
+  }
+
 
   private async loadCards(){ // loads the cards
     this.storage.get(EXERCISE_KEY).then(async (exercises: ExerciseCard[]) => {
@@ -383,17 +397,28 @@ export class Tab1Page implements OnInit{
     // init
     const ionCard: HTMLIonCardElement = document.createElement('ion-card');
     const ionHeader: HTMLIonCardHeaderElement = document.createElement('ion-card-header');
-    const ionTitle: HTMLIonTitleElement = document.createElement('ion-title');
     const ionContent: HTMLIonCardContentElement = document.createElement('ion-card-content');
     const img: HTMLImageElement = document.createElement('img');
+    const headItem: HTMLIonItemElement = document.createElement('ion-item');
+    const headLabel: HTMLIonLabelElement = document.createElement('ion-label');
+    const optButton: HTMLIonButtonElement = document.createElement('ion-button');
+    const optIcon: HTMLIonIconElement = document.createElement('ion-icon');
+    const h2: HTMLElement = document.createElement('h2');
 
     // declare
-    ionTitle.textContent = card.title;
+    h2.textContent = card.title;
+    optIcon.name = 'play';
+    optButton.slot = 'end';
+    optButton.addEventListener('click', (ev: Event) => this.openPlayModal(null, card));
     ionContent.textContent = card.content;
     img.src = card.img;
 
     // append
-    ionHeader.appendChild(ionTitle);
+    headLabel.appendChild(h2);
+    optButton.appendChild(optIcon);
+    headItem.appendChild(headLabel);
+    headItem.appendChild(optButton);
+    ionHeader.appendChild(headItem);
     ionCard.appendChild(ionHeader);    
     ionCard.appendChild(img);
     ionCard.appendChild(ionContent);
