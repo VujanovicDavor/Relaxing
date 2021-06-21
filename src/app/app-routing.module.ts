@@ -12,6 +12,10 @@ const routes: Routes = [
   {
     path: 'insert-mood-modal',
     loadChildren: () => import('./insert-mood-modal/insert-mood-modal.module').then( m => m.InsertMoodModalPageModule)
+  },
+  {
+    path: 'play-modal',
+    loadChildren: () => import('./play-modal/play-modal.module').then( m => m.PlayModalPageModule)
   }
 
 ];
