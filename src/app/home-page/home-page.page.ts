@@ -4,6 +4,8 @@ import {InsertMoodModalPage} from '../insert-mood-modal/insert-mood-modal.page';
 import { Storage } from '@ionic/storage-angular';
 import { ExerciseCard } from '../../models/exercise.card';
 import { Mood } from '../../models/mood';
+import * as JSONdata from "../default_data/data.json";
+import { LastPlayedActivity } from 'src/Models/last_played_activity';
 
 @Component({
   selector: 'app-home-page',  
@@ -11,7 +13,7 @@ import { Mood } from '../../models/mood';
   styleUrls: ['./home-page.page.scss'],
 })
 
-export class HomePagePage implements OnInit {
+export class HomePagePage {
 
   isHidden: boolean;
 
@@ -101,11 +103,6 @@ export class HomePagePage implements OnInit {
         }
       }
     });
-  }
-
-  async ngOnInit(){ // functions after init the app
-    await this.storage.create();
-   //  this.checkLastMoodInsert();
   }
 }
 
