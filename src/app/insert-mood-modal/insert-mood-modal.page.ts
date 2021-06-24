@@ -1,4 +1,3 @@
-import { HtmlAstPath } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';

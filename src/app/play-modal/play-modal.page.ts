@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, NavParams } from '@ionic/angular';
+import { ModalController, NavParams, AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
 import { ExerciseCard } from 'src/models/exercise.card';
 import { Playlist } from 'src/models/playlist';
@@ -22,7 +22,7 @@ export class PlayModalPage implements OnInit {
   private _totalNumberOfSeconds: number;
   private _exerciseList: ExerciseCard[];
 
-  constructor(private storage: Storage, private modalController: ModalController, private navParams: NavParams) { 
+  constructor(private storage: Storage, private modalController: ModalController, private navParams: NavParams, private alertController: AlertController) { 
     this._exercise = navParams.get('exercise');
     this._playlist = navParams.get('playlist');
     this._progressBarValue = 0;
@@ -36,39 +36,89 @@ export class PlayModalPage implements OnInit {
   }
 
   playExercise() {
+    let seconds: number;
+    let minutes: number;
+
+    if(this._exerciseList[this._exerciseIndex].seconds == null){
+      seconds = 0;
+    } else {
+      seconds = this._exerciseList[this._exerciseIndex].seconds;
+    }
+
+    if(this._exerciseList[this._exerciseIndex].minutes == null) {
+      minutes = 0;
+    } else {
+      minutes = this._exerciseList[this._exerciseIndex].minutes;
+    }
+
+    this._totalNumberOfSeconds = seconds + (60 * minutes);
+
     if(this._isPlaying == false) {
       this._isPlaying = true;
 
       this._timerIntervalId = setInterval(() => {
         this._progressBarValue = this._progressBarValue + (1 / 100);
 
-        if(this._progressBarValue == 1) {
+        if(this._progressBarValue >= 1) {
           clearInterval(this._timerIntervalId);
           clearTimeout(this._timerTimeoutId);
+          this.nextExercise();
           console.log('ClearedInterval');
         }
       }, this._totalNumberOfSeconds * 1000 * 0.01);
   
       this._timerTimeoutId = setTimeout(() => {
         clearInterval(this._timerIntervalId);
+        this.nextExercise();
         console.log('Cleared Interval');
       }, this._totalNumberOfSeconds * 1000);
     }
+  }
+
+  nextExercise() {
+    if(this._exerciseIndex < this._exerciseLength - 1) {
+      this._htmlElements[this._exerciseIndex].parentNode.removeChild(this._htmlElements[this._exerciseIndex]);
+      const title : HTMLIonTitleElement = <HTMLIonTitleElement>document.getElementById('pauseTitle');
+      title.textContent = 'Pause';
+      this._progressBarValue = 0;
+
+      let intervalId = setInterval(() => {
+        this._progressBarValue = this._progressBarValue + (1 / 100);
+      }, 100);
+
+      let timeOutId = setTimeout(() => {
+        clearInterval(intervalId);
+        clearTimeout();
+
+        this._exerciseIndex++;
+        this.presentExercise();
+        this._isPlaying = false;
+        this.setHeader();
+        this.playExercise();
+      }, 10000);
+    } else {
+      this.openFinishedAlert();
+    }
+  }
+
+  async openFinishedAlert() {
+    const alert = await this.alertController.create({
+      header: 'Great Job!',
+      message: 'You have just finished this Activity. Hopefully you feel better now!',
+      buttons: [{
+        text: 'OK',
+        role: 'cancel'
+      }]
+    });
+
+    await alert.present();
   }
 
   pauseExercise() {
     if(this._isPlaying == true) {
       clearInterval(this._timerIntervalId);
       clearTimeout(this._timerTimeoutId);
-    }
-  }
-
-  skipExercise() {
-
-    if(this._exerciseIndex < this._htmlElements.length - 1) {
-      this._htmlElements[this._exerciseIndex].removeChild(this._htmlElements[this._exerciseIndex]);
-      this._exerciseIndex++;
-      this.loadHTMLElements
+      this._isPlaying = false;
     }
   }
 
@@ -83,23 +133,6 @@ export class PlayModalPage implements OnInit {
   }
 
   loadExerciseHTMLElement(exercise: ExerciseCard) {
-    let seconds: number;
-    let minutes: number;
-
-    if(exercise.seconds == null){
-      seconds = 0;
-    } else {
-      seconds = exercise.seconds;
-    }
-
-    if(exercise.minutes == null) {
-      minutes = 0;
-    } else {
-      minutes = exercise.minutes;
-    }
-
-    this._totalNumberOfSeconds = seconds + (60 * minutes);
-    console.log(this._totalNumberOfSeconds);
 
     const ionCard: HTMLIonCardElement = document.createElement('ion-card');
     const ionHeader: HTMLIonCardHeaderElement = document.createElement('ion-card-header');
@@ -133,15 +166,17 @@ export class PlayModalPage implements OnInit {
     const h1: HTMLElement = document.getElementById('playModalHead');
     const h2: HTMLElement = document.getElementById('playModalExerciseTitle');
     let header: string = h1.textContent;
-    header = header + String(this._exerciseIndex + 1) + ' of ' + String(this._exerciseLength);
+    header = 'Exercise ' + String(this._exerciseIndex + 1) + ' of ' + String(this._exerciseLength);
     h1.textContent = header;
   }
 
   getExerciseLength() {
     if(this._playlist == null) {
       this._exerciseLength = 1;
+      this._exerciseList.push(this._exercise);
     } else {
       this._exerciseLength = this._playlist.cards.length;
+      this._exerciseList = this._playlist.cards;
     }
   }
 

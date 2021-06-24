@@ -194,6 +194,10 @@ export class Tab1Page implements OnInit{
           card.content = JSONdata.exercises[i].description;
           card.img = JSONdata.exercises[i].imageAddress;
           card.id = String(JSONdata.exercises[i].id);
+          card.lowerScore = JSONdata.exercises[i].minMoodScore;
+          card.upperScore = JSONdata.exercises[i].maxMoodScore;
+          card.minutes = JSONdata.exercises[i].minutes;
+          card.seconds = JSONdata.exercises[i].seconds;
           cards.push(card);
         }
         this.storage.set(EXERCISE_KEY, cards);
@@ -365,11 +369,13 @@ export class Tab1Page implements OnInit{
       console.log(this.exerciseList = exercises);
       const div: HTMLElement = document.getElementById('exercises_tab1');
       for(let i = 0; i < exercises.length; i++){
-        if(exercises[i].img == null || exercises[i].img == ''){
-          div.appendChild(this.createCustomExerciseCard(exercises[i]));
-        } else if(exercises[i].webViewPath == null || exercises[i].webViewPath == ''){
-          div.appendChild(this.createDefaultExerciseCard(exercises[i]));
-        }
+        try {
+          if(exercises[i].photo.webviewPath != '') {
+            div.appendChild(this.createCustomExerciseCard(exercises[i]));
+          } 
+          } catch {
+            div.appendChild(this.createDefaultExerciseCard(exercises[i]));
+          }
       }
     });
   }

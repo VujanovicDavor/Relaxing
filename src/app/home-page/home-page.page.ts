@@ -31,7 +31,7 @@ export class HomePagePage implements OnInit {
       component: InsertMoodModalPage,
     });
 
-    modal.onDidDismiss().then(data=>{
+    modal.onDidDismiss().then(async(data)=>{
 
      if(data.data == null){
        console.log('No data received (pressed "cancel")');
@@ -39,16 +39,26 @@ export class HomePagePage implements OnInit {
      } else{
        const newMoodObject: Mood = <Mood> data.data; // receive data => store to mood array
        console.log(newMoodObject);
+<<<<<<< HEAD
        console.log("total: " + (newMoodObject.productivityLevel + newMoodObject.relaxLevel + newMoodObject.satisfactionLevel));
        //this.addMoodObject(newMoodObject);
 
        this.loadCards(newMoodObject.productivityLevel + newMoodObject.relaxLevel + newMoodObject.satisfactionLevel);
+=======
+       this.addMoodObject(newMoodObject);
+       await this.getPlaylist(newMoodObject).then((playlist) => {
+        this.openPlayModal(playlist, null);
+       });
+
+       
+>>>>>>> 0cebdf15f1f08ccac4c5e138d1cda2f29877d606
      } 
     });
 
     return await modal.present();
   }
 
+<<<<<<< HEAD
   private async loadCards(moodLevel: number){ // loads the cards
     console.log(moodLevel);
     this.storage.get(EXERCISE_KEY).then(async (exercises: ExerciseCard[]) => {
@@ -80,6 +90,26 @@ export class HomePagePage implements OnInit {
       }
     });
   }
+=======
+  async getPlaylist(newMoodObject: Mood): Promise<Playlist> {
+    let exercises: ExerciseCard[] = await this.storage.get(EXERCISE_KEY);
+    let playlist: Playlist = new Playlist();
+
+    let foundExercises: boolean = false;
+
+    for(let i = 0; i < exercises.length && !foundExercises; i++) {
+      if(newMoodObject.relaxLevel + newMoodObject.productivityLevel + newMoodObject.satisfactionLevel <= exercises[i].upperScore && newMoodObject.relaxLevel + newMoodObject.productivityLevel + newMoodObject.satisfactionLevel >= exercises[i].lowerScore) {
+        playlist.cards.push(exercises[i]); // sching sching
+      }
+
+      if(playlist.cards.length == 3) {
+        foundExercises = true;
+      }
+    }
+    return Promise.resolve(playlist);
+  }
+
+>>>>>>> 0cebdf15f1f08ccac4c5e138d1cda2f29877d606
 
   async addMoodObject(toInsert: Mood){
     this.storage.get(MOOD_KEY).then((moodArr: Mood[]) => {
@@ -390,9 +420,9 @@ export class HomePagePage implements OnInit {
 
   async ngOnInit(){
     await this.storage.create();
-   //  this.checkLastMoodInsert();
-   this.presentLastPlayedActivity();
-   this.presentMostPlayedActivity();
+    this.checkLastMoodInsert();
+    this.presentLastPlayedActivity();
+    this.presentMostPlayedActivity();
   }
 }
 

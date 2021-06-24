@@ -14,16 +14,11 @@
     <ion-buttons slot="start">
       <ion-button (click)="playExercise()"><ion-icon slot="icon-only" name="play"></ion-icon></ion-button>
     </ion-buttons>
-    <ion-buttons slot="start">
-      <ion-button (click)="switchBackExercise()"><ion-icon slot="icon-only" name="play-back"></ion-icon></ion-button>
-    </ion-buttons>
-    <ion-buttons slot="end">
-      <ion-button (click)="skipExercise()"><ion-icon name="play-forward" slot="icon-only"></ion-icon></ion-button>
-    </ion-buttons>
     <ion-buttons slot="end">
       <ion-button (click)="pauseExercise()"><ion-icon slot="icon-only" name="pause"></ion-icon></ion-button>
     </ion-buttons>
     <ion-progress-bar [value]="_progressBarValue"></ion-progress-bar>
+    <ion-title id="pauseTitle"></ion-title>
   </ion-toolbar>
   <div id="playModalExercise">
 

@@ -40,7 +40,6 @@ export class ManageExercisesPage implements OnInit {
     if(this.exerciseLabel == null || this.exerciseLabel.length == 0){
       this.exerciseLabel = 'No Label';
     }
-    this.exerciseCard.webViewPath = '';
   }
 
   async addToPhotoGallery(){
