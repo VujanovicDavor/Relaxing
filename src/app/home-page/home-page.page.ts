@@ -39,58 +39,35 @@ export class HomePagePage implements OnInit {
      } else{
        const newMoodObject: Mood = <Mood> data.data; // receive data => store to mood array
        console.log(newMoodObject);
-<<<<<<< HEAD
-       console.log("total: " + (newMoodObject.productivityLevel + newMoodObject.relaxLevel + newMoodObject.satisfactionLevel));
-       //this.addMoodObject(newMoodObject);
-
-       this.loadCards(newMoodObject.productivityLevel + newMoodObject.relaxLevel + newMoodObject.satisfactionLevel);
-=======
        this.addMoodObject(newMoodObject);
-       await this.getPlaylist(newMoodObject).then((playlist) => {
-        this.openPlayModal(playlist, null);
-       });
-
-       
->>>>>>> 0cebdf15f1f08ccac4c5e138d1cda2f29877d606
+       this.loadCards(newMoodObject);
      } 
     });
 
     return await modal.present();
   }
 
-<<<<<<< HEAD
-  private async loadCards(moodLevel: number){ // loads the cards
-    console.log(moodLevel);
+  private async loadCards(newMoodObject: Mood){ // loads the cards
     this.storage.get(EXERCISE_KEY).then(async (exercises: ExerciseCard[]) => {
-      console.log(this.exerciseList = exercises);
       const div: HTMLElement = document.getElementById('basedOnYourMoodExercises');
-      
-      for(let i = 0; i < exercises.length; i++){
-        if(moodLevel < 6){
-          if((exercises[i].img == null || exercises[i].img == '') && i < 3){
-            div.appendChild(this.createCustomExerciseCard(exercises[i]));
-          } else if((exercises[i].webViewPath == null || exercises[i].webViewPath == '') && i < 3){
-            div.appendChild(this.createDefaultExerciseCard(exercises[i]));
-          }
+      const mainCard: HTMLIonCardElement = document.createElement('ion-card');
+      mainCard.title = "test";
+      let selectedCards: number = 0;
+      let foundExercises: Boolean = false;
+
+      for(let i = 0; i < exercises.length && !foundExercises; i++){
+        if(newMoodObject.relaxLevel + newMoodObject.productivityLevel + newMoodObject.satisfactionLevel <= exercises[i].upperScore && newMoodObject.relaxLevel + newMoodObject.productivityLevel + newMoodObject.satisfactionLevel >= exercises[i].lowerScore) {
+          mainCard.appendChild(this.createDefaultExerciseCard(exercises[i])); // sching sching
+          selectedCards++;
         }
-        else if(moodLevel > 5 && moodLevel < 12){
-          if((exercises[i].img == null || exercises[i].img == '') && i > 2 && i < 6){
-            div.appendChild(this.createCustomExerciseCard(exercises[i]));
-          } else if((exercises[i].webViewPath == null || exercises[i].webViewPath == '') && i > 2 && i < 6){
-            div.appendChild(this.createDefaultExerciseCard(exercises[i]));
-          }
-        }
-        else if(moodLevel > 11 && moodLevel <= 15){
-          if((exercises[i].img == null || exercises[i].img == '') && i > 5){
-            div.appendChild(this.createCustomExerciseCard(exercises[i]));
-          } else if((exercises[i].webViewPath == null || exercises[i].webViewPath == '') && i > 5){
-            div.appendChild(this.createDefaultExerciseCard(exercises[i]));
-          }
+  
+        if(selectedCards == 3) {
+          foundExercises = true;
         }
       }
+      div.appendChild(mainCard);
     });
   }
-=======
   async getPlaylist(newMoodObject: Mood): Promise<Playlist> {
     let exercises: ExerciseCard[] = await this.storage.get(EXERCISE_KEY);
     let playlist: Playlist = new Playlist();
@@ -109,7 +86,6 @@ export class HomePagePage implements OnInit {
     return Promise.resolve(playlist);
   }
 
->>>>>>> 0cebdf15f1f08ccac4c5e138d1cda2f29877d606
 
   async addMoodObject(toInsert: Mood){
     this.storage.get(MOOD_KEY).then((moodArr: Mood[]) => {
@@ -420,7 +396,7 @@ export class HomePagePage implements OnInit {
 
   async ngOnInit(){
     await this.storage.create();
-    this.checkLastMoodInsert();
+    //this.checkLastMoodInsert();
     this.presentLastPlayedActivity();
     this.presentMostPlayedActivity();
   }
