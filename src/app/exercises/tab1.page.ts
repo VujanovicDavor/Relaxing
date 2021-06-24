@@ -526,7 +526,15 @@ export class Tab1Page implements OnInit{
     optButton.slot = 'end';
     optButton.addEventListener('click', (ev: Event) => this.openOptionsAlert(card, 'Exercise'));
     ionContent.textContent = card.content;
-    img.src = card.photo.webviewPath;
+    
+    try {
+      if(card.photo.webviewPath != null && card.photo.webviewPath != ''){
+        img.src = card.photo.webviewPath;
+        ionCard.appendChild(img);
+      }
+    } catch {
+      console.log('Do nothing..');
+    }
 
     // append
     headLabel.appendChild(h2);
@@ -535,7 +543,6 @@ export class Tab1Page implements OnInit{
     headItem.appendChild(optButton);
     ionHeader.appendChild(headItem);
     ionCard.appendChild(ionHeader);    
-    ionCard.appendChild(img);
     ionCard.appendChild(ionContent);
 
     // set id
@@ -546,6 +553,8 @@ export class Tab1Page implements OnInit{
 
   updateSearchResult(){
     if(this.titleIsExercise){
+      
+
       for(let i = 0; i < this.exerciseList.length; i++){
         const card: HTMLIonCardElement = <HTMLIonCardElement> document.getElementById('ExerciseCard' + this.exerciseList[i].id);
         let txt: string = this.exerciseList[i].title;

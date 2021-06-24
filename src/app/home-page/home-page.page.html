@@ -7,7 +7,11 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="background ion-padding">
-  <ion-button [hidden]="isHidden" expand="block" (click)="presentModal()">Insert your Mood</ion-button>
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button [hidden]="isHidden" expand="block" (click)="presentModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
   <ion-card>
     <ion-toolbar>
       <ion-title id="lastPlayedActivityTitle"></ion-title>
