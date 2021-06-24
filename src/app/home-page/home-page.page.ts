@@ -29,7 +29,7 @@ export class HomePagePage implements OnInit {
       component: InsertMoodModalPage,
     });
 
-    modal.onDidDismiss().then(data=>{
+    modal.onDidDismiss().then(async(data)=>{
 
      if(data.data == null){
        console.log('No data received (pressed "cancel")');
@@ -37,11 +37,33 @@ export class HomePagePage implements OnInit {
      } else{
        const newMoodObject: Mood = <Mood> data.data; // receive data => store to mood array
        console.log(newMoodObject);
-       //this.addMoodObject(newMoodObject);
+       this.addMoodObject(newMoodObject);
+
+       let playlist: Playlist = await this.getPlaylist(newMoodObject);
+
+       this.openPlayModal(playlist, null);
      } 
     });
 
     return await modal.present();
+  }
+
+  async getPlaylist(newMoodObject: Mood): Promise<Playlist> {
+    let exercises: ExerciseCard[] = await this.storage.get(EXERCISE_KEY);
+    let playlist: Playlist = new Playlist();
+
+    let foundExercises: boolean = false;
+
+    for(let i = 0; i < exercises.length && !foundExercises; i++) {
+      if(newMoodObject.relaxLevel + newMoodObject.productivityLevel + newMoodObject.satisfactionLevel <= exercises[i].upperScore && newMoodObject.relaxLevel + newMoodObject.productivityLevel + newMoodObject.satisfactionLevel >= exercises[i].lowerScore) {
+        playlist.cards.push(exercises[i]); // sching sching
+      }
+
+      if(playlist.cards.length == 3) {
+        foundExercises = true;
+      }
+    }
+    return playlist;
   }
 
 

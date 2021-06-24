@@ -365,11 +365,13 @@ export class Tab1Page implements OnInit{
       console.log(this.exerciseList = exercises);
       const div: HTMLElement = document.getElementById('exercises_tab1');
       for(let i = 0; i < exercises.length; i++){
-        if(exercises[i].img == null || exercises[i].img == ''){
-          div.appendChild(this.createCustomExerciseCard(exercises[i]));
-        } else if(exercises[i].webViewPath == null || exercises[i].webViewPath == ''){
-          div.appendChild(this.createDefaultExerciseCard(exercises[i]));
-        }
+        try {
+          if(exercises[i].photo.webviewPath != '') {
+            div.appendChild(this.createCustomExerciseCard(exercises[i]));
+          } 
+          } catch {
+            div.appendChild(this.createDefaultExerciseCard(exercises[i]));
+          }
       }
     });
   }
