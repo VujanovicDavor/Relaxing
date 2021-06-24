@@ -11,6 +11,7 @@ import { Playlist } from 'src/models/playlist';
 import { PLAYLIST_KEY } from 'src/models/keys';
 import { CreatePlaylistPage } from './manageplaylists/createPlaylist/createPlaylist';
 import { PlayModalPage } from '../play-modal/play-modal.page';
+import { LastPlayedActivity } from 'src/models/last_played_activity';
 
 @Component({
   selector: 'app-tab1',
@@ -272,8 +273,18 @@ export class Tab1Page implements OnInit{
 
     const alert = await this.alertController.create({
       header: 'Select an option',
-      message: 'Do you want to delete or edit this ' + typeOfObject,
+      message: 'Do you want to play, delete or edit this ' + typeOfObject,
       buttons: [{
+          text: 'Play',
+          handler: () => {
+            if(playlist == null) {
+              this.openPlayModal(null, exercise);
+            } else {
+              this.openPlayModal(playlist, null);
+            }
+          }
+        },
+        {
         text: 'Edit',
         handler: () => {
           if(playlist == null){
@@ -299,6 +310,43 @@ export class Tab1Page implements OnInit{
   }
 
   async openPlayModal(playlist: Playlist, card: ExerciseCard) {
+    let lastPlayedActivity: LastPlayedActivity = new LastPlayedActivity();
+    
+    if(playlist == null) {
+      lastPlayedActivity._exercise = card;
+      await this.storage.set(LAST_PLAYED_ACTIVITY, lastPlayedActivity);
+
+      this.storage.get(EXERCISE_KEY).then(async (exCards: ExerciseCard[]) => {
+        let foundCard = false;
+
+        for(let i = 0; i < exCards.length && !foundCard; i++) {
+          if(exCards[i].id == card.id){
+            foundCard = true;
+            exCards[i].activityCounter++;
+          }
+        }
+
+        await this.storage.set(EXERCISE_KEY, exCards);
+      })
+    } else {
+      lastPlayedActivity._playlist = playlist;
+
+      await this.storage.set(LAST_PLAYED_ACTIVITY, lastPlayedActivity);
+      
+      this.storage.get(PLAYLIST_KEY).then(async(playlists: Playlist[]) => {
+        let foundPlaylist = false;
+
+        for(let i = 0; i < playlists.length && !foundPlaylist; i++){
+          if(playlists[i].id == playlist.id){
+            playlists[i].activityCounter++;
+            foundPlaylist = true;
+          }
+        }
+
+        await this.storage.set(PLAYLIST_KEY, playlists);
+      })
+    }
+
     const modal = await this.modalController.create({
       component: PlayModalPage,
       componentProps: { 'exercise': card, 'playlist': playlist }
@@ -314,7 +362,7 @@ export class Tab1Page implements OnInit{
 
   private async loadCards(){ // loads the cards
     this.storage.get(EXERCISE_KEY).then(async (exercises: ExerciseCard[]) => {
-      this.exerciseList = exercises;
+      console.log(this.exerciseList = exercises);
       const div: HTMLElement = document.getElementById('exercises_tab1');
       for(let i = 0; i < exercises.length; i++){
         if(exercises[i].img == null || exercises[i].img == ''){
@@ -492,20 +540,12 @@ export class Tab1Page implements OnInit{
 
   updateSearchResult(){
     if(this.titleIsExercise){
-      this.exerciseList.forEach(element => {
-        const card: HTMLIonCardElement = <HTMLIonCardElement> document.getElementById('ExerciseCard' + element.id);
-        let foundTitle: boolean = false;
-        let txt: string = '';
-
-        for(let i = 0; i < card.children.length && !foundTitle; i++){
-          if(card.children[i].tagName == 'ION-CARD-HEADER'){
-            foundTitle = true;
-            txt = card.children[i].children[0].textContent;
-            let presentCard: boolean = txt.toLowerCase().indexOf(this.searchbarInput.toLowerCase()) > -1;
-            card.style.display = presentCard ? 'block' : 'none';
-          }
-        }
-      });
+      for(let i = 0; i < this.exerciseList.length; i++){
+        const card: HTMLIonCardElement = <HTMLIonCardElement> document.getElementById('ExerciseCard' + this.exerciseList[i].id);
+        let txt: string = this.exerciseList[i].title;
+        let presentCard: boolean = txt.toLowerCase().indexOf(this.searchbarInput.toLowerCase()) > - 1;
+        card.style.display = presentCard ? 'block' : 'none';
+      };
     } else {
       this.playlistHTMLElements.forEach(element => {
         let txt: string = '';
@@ -526,3 +566,4 @@ export class Tab1Page implements OnInit{
 
 const EXERCISE_KEY = 'exercises';
 const CARD_ID = 'playlist_card_';
+const LAST_PLAYED_ACTIVITY = 'last_played_activity';

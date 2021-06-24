@@ -1,13 +1,31 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Play</ion-title>
+    <ion-title>
+      <label>
+        <h1 id="playModalHead">Exercise </h1>
+      </label>
+    </ion-title>
     <ion-buttons slot="end"><ion-button color="primary" (click)="closeModal()">CLOSE</ion-button></ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <div>
-    Text
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="playExercise()"><ion-icon slot="icon-only" name="play"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-buttons slot="start">
+      <ion-button (click)="switchBackExercise()"><ion-icon slot="icon-only" name="play-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="skipExercise()"><ion-icon name="play-forward" slot="icon-only"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="pauseExercise()"><ion-icon slot="icon-only" name="pause"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-progress-bar [value]="_progressBarValue"></ion-progress-bar>
+  </ion-toolbar>
+  <div id="playModalExercise">
+
   </div>
-  <ion-progress-bar  value="{_progressValue}"></ion-progress-bar>
 </ion-content>
