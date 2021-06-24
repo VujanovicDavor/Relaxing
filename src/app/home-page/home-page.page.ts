@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { IonCard, ModalController } from '@ionic/angular';
 import {InsertMoodModalPage} from '../insert-mood-modal/insert-mood-modal.page';
 import { Storage } from '@ionic/storage-angular';
-import { ExerciseCard } from '../../models/exercise.card';
 import { Mood } from '../../models/mood';
 import { LastPlayedActivity } from 'src/models/last_played_activity';
 import { PLAYLIST_KEY } from '../../models/keys';
 import { Playlist } from '../../models/playlist';
 import { PlayModalPage } from '../play-modal/play-modal.page';
+import * as JSONdata from "../default_data/data.json";
+import { ExerciseCard } from 'src/models/exercise.card';
 
 @Component({
   selector: 'app-home-page',  
@@ -18,6 +19,7 @@ import { PlayModalPage } from '../play-modal/play-modal.page';
 export class HomePagePage implements OnInit {
 
   isHidden: boolean;
+  private exerciseList: Array<ExerciseCard>;
 
 
   constructor(public modalController: ModalController, public storage: Storage) {
@@ -38,17 +40,34 @@ export class HomePagePage implements OnInit {
        const newMoodObject: Mood = <Mood> data.data; // receive data => store to mood array
        console.log(newMoodObject);
        this.addMoodObject(newMoodObject);
-       await this.getPlaylist(newMoodObject).then((playlist) => {
-        this.openPlayModal(playlist, null);
-       });
-
-       
+       this.loadCards(newMoodObject);
      } 
     });
 
     return await modal.present();
   }
 
+  private async loadCards(newMoodObject: Mood){ // loads the cards
+    this.storage.get(EXERCISE_KEY).then(async (exercises: ExerciseCard[]) => {
+      const div: HTMLElement = document.getElementById('basedOnYourMoodExercises');
+      const mainCard: HTMLIonCardElement = document.createElement('ion-card');
+      mainCard.title = "test";
+      let selectedCards: number = 0;
+      let foundExercises: Boolean = false;
+
+      for(let i = 0; i < exercises.length && !foundExercises; i++){
+        if(newMoodObject.relaxLevel + newMoodObject.productivityLevel + newMoodObject.satisfactionLevel <= exercises[i].upperScore && newMoodObject.relaxLevel + newMoodObject.productivityLevel + newMoodObject.satisfactionLevel >= exercises[i].lowerScore) {
+          mainCard.appendChild(this.createDefaultExerciseCard(exercises[i])); // sching sching
+          selectedCards++;
+        }
+  
+        if(selectedCards == 3) {
+          foundExercises = true;
+        }
+      }
+      div.appendChild(mainCard);
+    });
+  }
   async getPlaylist(newMoodObject: Mood): Promise<Playlist> {
     let exercises: ExerciseCard[] = await this.storage.get(EXERCISE_KEY);
     let playlist: Playlist = new Playlist();
@@ -377,7 +396,7 @@ export class HomePagePage implements OnInit {
 
   async ngOnInit(){
     await this.storage.create();
-    this.checkLastMoodInsert();
+    //this.checkLastMoodInsert();
     this.presentLastPlayedActivity();
     this.presentMostPlayedActivity();
   }
@@ -387,3 +406,4 @@ const MOOD_KEY = 'MoodObject';
 const EXERCISE_KEY = 'exercises';
 const LAST_PLAYED_ACTIVITY = 'last_played_activity';
 const CARD_ID = 'playlist_card_';
+const MOODEXERCISE_KEY = "moodexerciseKEY";

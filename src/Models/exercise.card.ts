@@ -8,6 +8,8 @@ export class ExerciseCard{
     public type: string;
     public minutes: number;
     public seconds: number;
+    public minMoodScore: number;
+    public maxMoodScore: number;
     public photo: Photo;
     public activityCounter: number;
     public lowerScore: number;
