@@ -4,15 +4,10 @@ import {InsertMoodModalPage} from '../insert-mood-modal/insert-mood-modal.page';
 import { Storage } from '@ionic/storage-angular';
 import { ExerciseCard } from '../../models/exercise.card';
 import { Mood } from '../../models/mood';
-<<<<<<< HEAD
-import * as JSONdata from "../default_data/data.json";
-import { LastPlayedActivity } from 'src/Models/last_played_activity';
-=======
 import { LastPlayedActivity } from 'src/models/last_played_activity';
 import { PLAYLIST_KEY } from '../../models/keys';
 import { Playlist } from '../../models/playlist';
 import { PlayModalPage } from '../play-modal/play-modal.page';
->>>>>>> c9c61ab7b7e54b3e6ed1c90c3f455a16882a2314
 
 @Component({
   selector: 'app-home-page',  
@@ -20,7 +15,7 @@ import { PlayModalPage } from '../play-modal/play-modal.page';
   styleUrls: ['./home-page.page.scss'],
 })
 
-export class HomePagePage {
+export class HomePagePage implements OnInit {
 
   isHidden: boolean;
 
@@ -91,8 +86,6 @@ export class HomePagePage {
       }
     });
   }
-<<<<<<< HEAD
-=======
 
   async presentLastPlayedActivity() {
     const div: HTMLElement =  document.getElementById('lastPlayedActivity');
@@ -365,7 +358,6 @@ export class HomePagePage {
    this.presentLastPlayedActivity();
    this.presentMostPlayedActivity();
   }
->>>>>>> c9c61ab7b7e54b3e6ed1c90c3f455a16882a2314
 }
 
 const MOOD_KEY = 'MoodObject';
