@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { IonCard, ModalController } from '@ionic/angular';
 import {InsertMoodModalPage} from '../insert-mood-modal/insert-mood-modal.page';
 import { Storage } from '@ionic/storage-angular';
-import { ExerciseCard } from '../../models/exercise.card';
 import { Mood } from '../../models/mood';
 import { LastPlayedActivity } from 'src/models/last_played_activity';
 import { PLAYLIST_KEY } from '../../models/keys';
 import { Playlist } from '../../models/playlist';
 import { PlayModalPage } from '../play-modal/play-modal.page';
+import * as JSONdata from "../default_data/data.json";
+import { ExerciseCard } from 'src/models/exercise.card';
 
 @Component({
   selector: 'app-home-page',  
@@ -18,6 +19,7 @@ import { PlayModalPage } from '../play-modal/play-modal.page';
 export class HomePagePage implements OnInit {
 
   isHidden: boolean;
+  private exerciseList: Array<ExerciseCard>;
 
 
   constructor(public modalController: ModalController, public storage: Storage) {
@@ -37,13 +39,47 @@ export class HomePagePage implements OnInit {
      } else{
        const newMoodObject: Mood = <Mood> data.data; // receive data => store to mood array
        console.log(newMoodObject);
+       console.log("total: " + (newMoodObject.productivityLevel + newMoodObject.relaxLevel + newMoodObject.satisfactionLevel));
        //this.addMoodObject(newMoodObject);
+
+       this.loadCards(newMoodObject.productivityLevel + newMoodObject.relaxLevel + newMoodObject.satisfactionLevel);
      } 
     });
 
     return await modal.present();
   }
 
+  private async loadCards(moodLevel: number){ // loads the cards
+    console.log(moodLevel);
+    this.storage.get(EXERCISE_KEY).then(async (exercises: ExerciseCard[]) => {
+      console.log(this.exerciseList = exercises);
+      const div: HTMLElement = document.getElementById('basedOnYourMoodExercises');
+      
+      for(let i = 0; i < exercises.length; i++){
+        if(moodLevel < 6){
+          if((exercises[i].img == null || exercises[i].img == '') && i < 3){
+            div.appendChild(this.createCustomExerciseCard(exercises[i]));
+          } else if((exercises[i].webViewPath == null || exercises[i].webViewPath == '') && i < 3){
+            div.appendChild(this.createDefaultExerciseCard(exercises[i]));
+          }
+        }
+        else if(moodLevel > 5 && moodLevel < 12){
+          if((exercises[i].img == null || exercises[i].img == '') && i > 2 && i < 6){
+            div.appendChild(this.createCustomExerciseCard(exercises[i]));
+          } else if((exercises[i].webViewPath == null || exercises[i].webViewPath == '') && i > 2 && i < 6){
+            div.appendChild(this.createDefaultExerciseCard(exercises[i]));
+          }
+        }
+        else if(moodLevel > 11 && moodLevel <= 15){
+          if((exercises[i].img == null || exercises[i].img == '') && i > 5){
+            div.appendChild(this.createCustomExerciseCard(exercises[i]));
+          } else if((exercises[i].webViewPath == null || exercises[i].webViewPath == '') && i > 5){
+            div.appendChild(this.createDefaultExerciseCard(exercises[i]));
+          }
+        }
+      }
+    });
+  }
 
   async addMoodObject(toInsert: Mood){
     this.storage.get(MOOD_KEY).then((moodArr: Mood[]) => {
@@ -364,3 +400,4 @@ const MOOD_KEY = 'MoodObject';
 const EXERCISE_KEY = 'exercises';
 const LAST_PLAYED_ACTIVITY = 'last_played_activity';
 const CARD_ID = 'playlist_card_';
+const MOODEXERCISE_KEY = "moodexerciseKEY";
