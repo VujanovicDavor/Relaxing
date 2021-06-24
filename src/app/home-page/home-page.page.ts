@@ -38,10 +38,11 @@ export class HomePagePage implements OnInit {
        const newMoodObject: Mood = <Mood> data.data; // receive data => store to mood array
        console.log(newMoodObject);
        this.addMoodObject(newMoodObject);
+       await this.getPlaylist(newMoodObject).then((playlist) => {
+        this.openPlayModal(playlist, null);
+       });
 
-       let playlist: Playlist = await this.getPlaylist(newMoodObject);
-
-       this.openPlayModal(playlist, null);
+       
      } 
     });
 
@@ -63,7 +64,7 @@ export class HomePagePage implements OnInit {
         foundExercises = true;
       }
     }
-    return playlist;
+    return Promise.resolve(playlist);
   }
 
 
@@ -376,9 +377,9 @@ export class HomePagePage implements OnInit {
 
   async ngOnInit(){
     await this.storage.create();
-   //  this.checkLastMoodInsert();
-   this.presentLastPlayedActivity();
-   this.presentMostPlayedActivity();
+    this.checkLastMoodInsert();
+    this.presentLastPlayedActivity();
+    this.presentMostPlayedActivity();
   }
 }
 
