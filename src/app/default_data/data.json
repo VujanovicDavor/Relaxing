@@ -3,39 +3,101 @@
         {
             "id": 1,
             "title": "Depth abdominal breathing",
-            "description": "Sit up straight and close your eyes. Then inhale 5 seconds and exhale 5 seconds. Inhale through your nose and exhale through your mouth. It is important to breath rhythmically and to concentrate fully on your breathing. Repeat this exercise till the strain falls off!",
+            "description": "Sit up straight and close your eyes. Then inhale 5 seconds and exhale 5 seconds, repeat this 5 times. Inhale through your nose and exhale through your mouth. It is important to breath rhythmically and to concentrate fully on your breathing. Repeat this exercise till the strain falls off!",
             "type": "Breathing Exercise",
             "imageAddress": "https://www.myself.de/Undefined/image-thumb__6525__gallery-horizontal/anspannung-entspannung.jpg",
             "minutes": 0,
-            "seconds": 15
+            "seconds": 50,
+            "minMoodScore": 3,
+            "maxMoodScore": 5
         },
         {
             "id": 2,
             "title": "Strain - Relaxation",
             "description": "Inhale slowly through your nose. Then contract all your muscles as much as you can. Hold your breath for 10 - 20 seconds. Afterwards exhale and relax your body.",
             "type": "Breathing Exercise",
-            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6524__gallery-horizontal/entspannungs%C3%BCbungen_2.jpg"
+            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6524__gallery-horizontal/entspannungs%C3%BCbungen_2.jpg",
+            "minutes": 1,
+            "seconds": 0,
+            "minMoodScore": 6,
+            "maxMoodScore": 10
         },
         {
             "id": 3,
             "title": "Muscle Relaxation",
-            "description": "With muscle relaxation, the whole body is not tensed at once, but individual muscle groups are first tensed one after the other and then relaxed again in a targeted manner. You start with your feet and work your way through your whole body to your head. The tension phase does not last longer than five to ten seconds.",
+            "description": "With muscle relaxation, the whole body is not tensed at once, but individual muscle groups are first tensed one after the other and then relaxed again in a targeted manner. You start with your feet and work your way through your whole body to your head. The tension phase does not last longer than ten seconds (~30s for the whole body). Repeat this process for 3 times",
             "type": "Stretching Exercise",
-            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6533__gallery-horizontal/Progressive-Muskelrelaxation.jpg"
+            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6533__gallery-horizontal/Progressive-Muskelrelaxation.jpg",
+            "minutes": 1,
+            "seconds": 30,
+            "minMoodScore": 6,
+            "maxMoodScore": 10
         },
         {
             "id": 4,
             "title": "Stretching",
             "description": "Stand upright, stretch your arms up and pull them towards the sky. The back is straight and straightened as well, as are the calves and feet.",
             "type": "Stretching Exercise",
-            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6526__gallery-horizontal/k%C3%B6rper-strecken.jpg"
+            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6526__gallery-horizontal/k%C3%B6rper-strecken.jpg",
+            "minutes": 0,
+            "seconds": 45,
+            "minMoodScore": 11,
+            "maxMoodScore": 15
         },
         {
             "id": 5,
             "title": "Meditation",
             "description": "Find a quiet, comfortable place, lie on your back or sit cross-legged and close your eyes. Inhale slowly through your nose and exhale through your mouth. Basically, the success of meditating lies in doing nothing.",
             "type": "Breathing Exercise",
-            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6529__gallery-horizontal/meditation_3.jpg"
+            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6529__gallery-horizontal/meditation_3.jpg",
+            "minutes": 3,
+            "seconds": 0,
+            "minMoodScore": 3,
+            "maxMoodScore": 5
+        },
+        {
+            "id": 6,
+            "title": "Smiling",
+            "description": "Just smile away from stress? Actually works, no kidding. Just force yourself to smile - but at least one minute at a time - it may feel strange the first time, but it is guaranteed to work.",
+            "type": "Strange Exercise",
+            "imageAddress": "https://www.myself.de/Undefined/image-thumb__6528__gallery-horizontal/l%C3%A4cheln.jpg",
+            "minutes": 1,
+            "seconds": 10,
+            "minMoodScore": 11,
+            "maxMoodScore": 15
+        },
+        {
+            "id": 7,
+            "title": "Downward Dog Pose",
+            "description": "Head down, ultimately touching the floor, with the weight of the body on the palms and the feet. The arms are stretched straight forward, shoulder width apart; the feet are a foot apart, the legs are straight, and the hips are raised as high as possible.",
+            "type": "Breathing Exercise",
+            "imageAddress": "https://www.ok-magazin.de/sites/default/files/styles/amp_metadata__content_image_1200px_wide/public/media/gallery/2021/03/17/junge-frau-im-herabschauenende-hund.png",
+            "minutes": 1,
+            "seconds": 5,
+            "minMoodScore": 11,
+            "maxMoodScore": 15
+        },
+        {
+            "id": 8,
+            "title": "The Rob",
+            "description": "Just do the Rob!",
+            "type": "Breathing Exercise",
+            "imageAddress": "https://image.freepik.com/free-photo/beautiful-asian-woman-doing-yoga-poses-workout-exercise-relaxing-meditating-home-asia-yoga-zen-sport-fitness-healthy-home-activity-asian-woman-concept_187274-300.jpg",
+            "minutes": 3,
+            "seconds": 12,
+            "minMoodScore": 6,
+            "maxMoodScore": 10
+        },
+        {
+            "id": 9,
+            "title": "Sitting Position",
+            "description": "Try to be in a sitting position, you should feel the strain in your thigh",
+            "type": "Stretching Exercise",
+            "imageAddress": "https://images01.oe24.at/1222222.jpg/620x620NoCrop/282.940.092",
+            "minutes": 3,
+            "seconds": 0,
+            "minMoodScore": 3,
+            "maxMoodScore": 5
         }
     ]
 }
