@@ -51,7 +51,13 @@ export class HomePagePage implements OnInit {
     this.storage.get(EXERCISE_KEY).then(async (exercises: ExerciseCard[]) => {
       const div: HTMLElement = document.getElementById('basedOnYourMoodExercises');
       const mainCard: HTMLIonCardElement = document.createElement('ion-card');
-      mainCard.title = "test";
+      const mainCardHead: HTMLIonCardHeaderElement = document.createElement('ion-card-header');
+      const label: HTMLElement = document.createElement('label');
+      const h2: HTMLElement = document.createElement('h2');
+      h2.textContent = 'Based on your mood';
+      label.appendChild(h2);
+      mainCardHead.appendChild(label);
+      mainCard.appendChild(mainCardHead);
       let selectedCards: number = 0;
       let foundExercises: Boolean = false;
 
