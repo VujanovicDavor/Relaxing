@@ -1,4 +1,3 @@
-import { title } from "node:process";
 import { ExerciseCard } from "./exercise.card";
 
 export class Playlist{
@@ -6,12 +5,14 @@ export class Playlist{
     id: string;
     public name: string;
     public description: string;
+    public activityCounter: number;
 
     constructor(){
         this.cards = new Array();
         this.id = '';
         this.name = '';
         this.description = '';
+        this.activityCounter = 0;
     }
 
     createNewPlaylist(id: string, name:string, description: string, exercises: ExerciseCard[]){

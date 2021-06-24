@@ -4,6 +4,10 @@ import {InsertMoodModalPage} from '../insert-mood-modal/insert-mood-modal.page';
 import { Storage } from '@ionic/storage-angular';
 import { ExerciseCard } from '../../models/exercise.card';
 import { Mood } from '../../models/mood';
+import { LastPlayedActivity } from 'src/models/last_played_activity';
+import { PLAYLIST_KEY } from '../../models/keys';
+import { Playlist } from '../../models/playlist';
+import { PlayModalPage } from '../play-modal/play-modal.page';
 
 @Component({
   selector: 'app-home-page',  
@@ -38,26 +42,6 @@ export class HomePagePage implements OnInit {
     });
 
     return await modal.present();
-  }
-
-  calculateScore(moodObject: Mood){
-    const score = moodObject.getMoodScore();
-    
-    if(score > 0){
-      this.loadCards(score);
-    } else {
-      console.log('score <= 0 -> no cards can be loaded');
-    }
-  }
-
-  async loadCards(score: number){
-    this.storage.get(CARDS_KEY).then((cards: ExerciseCard[]) => {
-      cards.forEach(element => {
-        
-      });
-    }).catch(()=>{
-      console.log('Error in loadCards');
-    });
   }
 
 
@@ -103,11 +87,280 @@ export class HomePagePage implements OnInit {
     });
   }
 
-  async ngOnInit(){ // functions after init the app
+  async presentLastPlayedActivity() {
+    const div: HTMLElement =  document.getElementById('lastPlayedActivity');
+    const title: HTMLElement = document.getElementById('lastPlayedActivityTitle');
+
+    this.storage.get(LAST_PLAYED_ACTIVITY).then((activity : LastPlayedActivity) => {
+      if(activity == null) {
+        title.textContent = 'Start with a random exercise!';
+      } else {
+        title.textContent = 'Jump back in:';
+
+        if(activity._exercise == null) {
+          div.appendChild(this.loadPlaylist(activity._playlist));
+        } else if(activity._playlist == null){
+          try {
+            if(activity._exercise.photo.webviewPath != '') {
+              div.appendChild(this.createCustomExerciseCard(activity._exercise));
+            } 
+          } catch {
+            div.appendChild(this.createDefaultExerciseCard(activity._exercise));
+          }
+        }
+      }
+    });
+  }
+
+  private createDefaultExerciseCard(card: ExerciseCard): HTMLIonCardElement {
+    if(card == null){
+      return null;
+    }
+
+    // init
+    const ionCard: HTMLIonCardElement = document.createElement('ion-card');
+    const ionHeader: HTMLIonCardHeaderElement = document.createElement('ion-card-header');
+    const ionContent: HTMLIonCardContentElement = document.createElement('ion-card-content');
+    const img: HTMLImageElement = document.createElement('img');
+    const headItem: HTMLIonItemElement = document.createElement('ion-item');
+    const headLabel: HTMLIonLabelElement = document.createElement('ion-label');
+    const optButton: HTMLIonButtonElement = document.createElement('ion-button');
+    const optIcon: HTMLIonIconElement = document.createElement('ion-icon');
+    const h2: HTMLElement = document.createElement('h2');
+
+    // declare
+    h2.textContent = card.title;
+    optIcon.name = 'play';
+    optButton.slot = 'end';
+    optButton.addEventListener('click', (ev: Event) => this.openPlayModal(null, card));
+    ionContent.textContent = card.content;
+    img.src = card.img;
+
+    // append
+    headLabel.appendChild(h2);
+    optButton.appendChild(optIcon);
+    headItem.appendChild(headLabel);
+    headItem.appendChild(optButton);
+    ionHeader.appendChild(headItem);
+    ionCard.appendChild(ionHeader);    
+    ionCard.appendChild(img);
+    ionCard.appendChild(ionContent);
+
+    // set id
+    ionCard.id = 'ExerciseCard' + card.id;
+
+    return ionCard;
+  }
+
+
+  private createCustomExerciseCard(card: ExerciseCard): HTMLIonCardElement {
+    if(card == null){
+      return null;
+    }
+
+    // init
+    const ionCard: HTMLIonCardElement = document.createElement('ion-card');
+    const ionHeader: HTMLIonCardHeaderElement = document.createElement('ion-card-header');
+    const ionContent: HTMLIonCardContentElement = document.createElement('ion-card-content');
+    const img: HTMLImageElement = document.createElement('img');
+    const headItem: HTMLIonItemElement = document.createElement('ion-item');
+    const headLabel: HTMLIonLabelElement = document.createElement('ion-label');
+    const optButton: HTMLIonButtonElement = document.createElement('ion-button');
+    const optIcon: HTMLIonIconElement = document.createElement('ion-icon');
+    const h2: HTMLElement = document.createElement('h2');
+
+    // declare
+    h2.textContent = card.title;
+    optIcon.name = 'play';
+    optButton.slot = 'end';
+    optButton.addEventListener('click', (ev: Event) => this.openPlayModal(null, card));
+    ionContent.textContent = card.content;
+    img.src = card.photo.webviewPath;
+
+    // append
+    headLabel.appendChild(h2);
+    headItem.appendChild(headLabel);
+    optButton.appendChild(optIcon);
+    headItem.appendChild(optButton);
+    ionHeader.appendChild(headItem);
+    ionCard.appendChild(ionHeader);    
+    ionCard.appendChild(img);
+    ionCard.appendChild(ionContent);
+
+    // set id
+    ionCard.id = 'ExerciseCard' + card.id;
+    return ionCard;
+  }
+
+  private loadPlaylist(playlist: Playlist){
+    //const title: HTMLIonTitleElement = <HTMLIonTitleElement> document.getElementById('stored_playlists_title');
+    //title.style.display = 'block';
+
+    if(playlist == null){
+      return;
+    }
+
+    console.log(playlist);
+
+    const card: HTMLIonCardElement = document.createElement('ion-card');
+    const cardHeader: HTMLIonCardHeaderElement = document.createElement('ion-card-header');
+    const cardContent: HTMLIonCardContentElement = document.createElement('ion-card-content');
+    const label: HTMLIonLabelElement = document.createElement('ion-label');
+    const labelItem: HTMLIonItemElement = document.createElement('ion-item');
+    const optionButton: HTMLIonButtonElement = document.createElement('ion-button');
+    const optionIcon: HTMLIonIconElement = document.createElement('ion-icon');
+    const headItem: HTMLIonItemElement = document.createElement('ion-item');
+    const headTitle: HTMLIonLabelElement = document.createElement('ion-label');
+    const hTitle: HTMLElement = document.createElement('h2');
+
+    card.id = CARD_ID + playlist.id;
+    console.log(card.id);
+    console.log(playlist.id);
+
+    optionIcon.name = 'play';
+    optionButton.appendChild(optionIcon);
+    optionButton.slot = 'end';
+    optionButton.addEventListener('click', (e: Event) => this.openPlayModal(playlist, null));
+
+    hTitle.textContent = String(playlist.name);
+    headTitle.appendChild(hTitle);
+    headItem.appendChild(headTitle);
+    headItem.appendChild(optionButton);
+
+    cardHeader.appendChild(headItem);
+
+    label.textContent = 'Exercises:';
+    labelItem.appendChild(label);
+    cardContent.textContent = String(playlist.description);
+
+    card.appendChild(cardHeader);
+    card.appendChild(cardContent);
+    card.appendChild(labelItem);
+
+    for(let i = 0; i < playlist.cards.length; i++){
+      const item: HTMLIonItemElement = document.createElement('ion-item');
+      const label: HTMLIonLabelElement = document.createElement('ion-label');
+      const h3: HTMLElement = document.createElement('h3');
+      const icon: HTMLIonIconElement = document.createElement('ion-icon');
+      icon.name = 'radio-button-on-outline';
+      icon.slot = "start";
+
+      h3.textContent = playlist.cards[i].title;
+      label.appendChild(h3);
+      item.appendChild(icon);
+      item.appendChild(label);
+
+      card.appendChild(item);
+    }
+    return card;
+  }
+
+  async openPlayModal(playlist: Playlist, card: ExerciseCard) {
+    let lastPlayedActivity: LastPlayedActivity = new LastPlayedActivity();
+    
+    if(playlist == null) {
+      lastPlayedActivity._exercise = card;
+      await this.storage.set(LAST_PLAYED_ACTIVITY, lastPlayedActivity);
+
+      this.storage.get(EXERCISE_KEY).then(async (exCards: ExerciseCard[]) => {
+        let foundCard = false;
+
+        for(let i = 0; i < exCards.length && !foundCard; i++) {
+          if(exCards[i].id == card.id){
+            foundCard = true;
+            exCards[i].activityCounter++;
+          }
+        }
+
+        await this.storage.set(EXERCISE_KEY, exCards);
+      })
+    } else {
+      lastPlayedActivity._playlist = playlist;
+
+      await this.storage.set(LAST_PLAYED_ACTIVITY, lastPlayedActivity);
+      
+      this.storage.get(PLAYLIST_KEY).then(async(playlists: Playlist[]) => {
+        let foundPlaylist = false;
+
+        for(let i = 0; i < playlists.length && !foundPlaylist; i++){
+          if(playlists[i].id == playlist.id){
+            playlists[i].activityCounter++;
+            foundPlaylist = true;
+          }
+        }
+
+        await this.storage.set(PLAYLIST_KEY, playlists);
+      })
+    }
+
+    const modal = await this.modalController.create({
+      component: PlayModalPage,
+      componentProps: { 'exercise': card, 'playlist': playlist }
+    });
+
+    modal.onDidDismiss().then(()  => {
+
+    });
+
+    return await modal.present();
+  }
+
+  async presentMostPlayedActivity() {
+    const div: HTMLElement = document.getElementById('mostPlayedActivity');
+
+    this.storage.get(EXERCISE_KEY).then(async(cards: ExerciseCard[]) => {
+      let playlists: Playlist[] = await this.storage.get(PLAYLIST_KEY);
+
+      let maxPlay = 0;
+      let maxCounterPlay;
+      
+      if(playlists.length > 0) {
+        maxCounterPlay = playlists[0].activityCounter;
+
+        for(let i = 1; i < playlists.length; i++) {
+          if(playlists[i].activityCounter > maxCounterPlay) {
+            maxPlay = i;
+            maxCounterPlay = playlists[i].activityCounter;
+          }
+        }
+      } else {
+        maxCounterPlay = -1;
+      }
+
+      let maxCard = 0;
+      let maxCounterCard = cards[0].activityCounter;
+
+      for(let i = 1; i < cards.length; i++) {
+        if(cards[i].activityCounter > maxCounterCard) {
+          maxCard = i;
+          maxCounterCard = cards[i].activityCounter;
+        }
+      }
+
+      if(maxCounterCard >= maxCounterPlay) {
+        try {
+          if(cards[maxCard].photo.webviewPath != '') {
+            div.appendChild(this.createCustomExerciseCard(cards[maxCard]));
+          } 
+        } catch {
+          div.appendChild(this.createDefaultExerciseCard(cards[maxCard]));
+        }
+      } else {
+        div.appendChild(this.loadPlaylist(playlists[maxPlay]));
+      }
+
+    })
+  }
+
+  async ngOnInit(){
     await this.storage.create();
    //  this.checkLastMoodInsert();
+   this.presentLastPlayedActivity();
+   this.presentMostPlayedActivity();
   }
 }
 
 const MOOD_KEY = 'MoodObject';
-const CARDS_KEY = 'ExerciseCards';
+const EXERCISE_KEY = 'exercises';
+const LAST_PLAYED_ACTIVITY = 'last_played_activity';
+const CARD_ID = 'playlist_card_';

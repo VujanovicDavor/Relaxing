@@ -8,5 +8,16 @@
 
 <ion-content [fullscreen]="true" class="background ion-padding">
   <ion-button [hidden]="isHidden" expand="block" (click)="presentModal()">Insert your Mood</ion-button>
-  <div id='moodCards'></div>
+  <ion-card>
+    <ion-toolbar>
+      <ion-title id="lastPlayedActivityTitle"></ion-title>
+    </ion-toolbar>
+    <div id="lastPlayedActivity"></div>
+  </ion-card>
+  <ion-card>
+    <ion-toolbar>
+      <ion-title>Your most loved Activity:</ion-title>
+    </ion-toolbar>
+    <div id="mostPlayedActivity"></div>
+  </ion-card>
 </ion-content>

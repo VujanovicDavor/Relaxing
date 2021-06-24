@@ -96,7 +96,7 @@ export class ManageExercisesPage implements OnInit {
     const button: HTMLIonButtonElement = <HTMLIonButtonElement> document.getElementById('exercise_store_button');
     
     
-    if(this.inputDescription == null || this.inputName == null || this.inputMinutes == null && this.inputSeconds == null || this.exerciseCard.photo.webviewPath == ''){
+    if(this.inputDescription == null || this.inputName == null || this.inputMinutes == null && this.inputSeconds == null){
       button.disabled = true;
     } else {
       let sum: number = 0;

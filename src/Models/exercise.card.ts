@@ -12,6 +12,7 @@ export class ExerciseCard{
     public photo: Photo;
     private primaryType: string;
     private secondaryType: string;
+    public activityCounter: number;
 
     constructor(){
         this.content = '';
@@ -21,6 +22,7 @@ export class ExerciseCard{
         this.webViewPath = '';
         this.minutes = 0;
         this.seconds = 0;
+        this.activityCounter = 0;
     }
 
     public getPrimaryType(): string {
